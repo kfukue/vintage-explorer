@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import { Button } from 'rimble-ui'
+import CustomToolBar from "./header/customToolBar/CustomToolBar.js";
 
 import "./App.css";
 
@@ -69,6 +70,7 @@ class App extends Component {
     }
     return (
       <div className="App">
+        <CustomToolBar></CustomToolBar>
         <h1>Good to Go!</h1>
         <p>Your Truffle Box is installed and ready.</p>
         <h2>Smart Contract Example</h2>
