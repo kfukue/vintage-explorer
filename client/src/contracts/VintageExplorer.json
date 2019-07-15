@@ -91,25 +91,25 @@
       "type": "event"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"idGenerator\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"wineProducerAddress\",\"type\":\"address\"}],\"name\":\"LogWineProducerAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"wineProducerAddress\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"sku\",\"type\":\"string\"}],\"name\":\"LogWineAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"wineId\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"numWInes\",\"type\":\"uint256\"}],\"name\":\"LogBuyWine\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/git/vintage-explorer/contracts/VintageExplorer.sol\":\"VintageExplorer\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/git/vintage-explorer/contracts/VintageExplorer.sol\":{\"keccak256\":\"0x361c470b2c54a0c61cd5e4bdd5620286be4a3ff0019320aa358c4cf8984e8eb0\",\"urls\":[\"bzzr://2b411d95700c520b272edbb92761074a2e433ba4c878252bf92679e84e8f4afe\"]}},\"version\":1}",
-  "bytecode": "0x6080604052606460015534801561001557600080fd5b5060f2806100246000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80638da5cb5b146037578063e7bd92b914607f575b600080fd5b603d609b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b608560c0565b6040518082815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6002548156fea165627a7a7230582057e3d672f95d4795ba8057646c23e865172ba6c72b749cac772d7e0e9d1a7cb00029",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80638da5cb5b146037578063e7bd92b914607f575b600080fd5b603d609b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b608560c0565b6040518082815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6002548156fea165627a7a7230582057e3d672f95d4795ba8057646c23e865172ba6c72b749cac772d7e0e9d1a7cb00029",
-  "sourceMap": "140:8866:2:-;;;345:7;323:29;;140:8866;8:9:-1;5:2;;;30:1;27;20:12;5:2;140:8866:2;;;;;;;",
-  "deployedSourceMap": "140:8866:2:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;140:8866:2;;;;;;;;;;;;;;;;;;;;;;;;289:28;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;437:23;;;:::i;:::-;;;;;;;;;;;;;;;;;;;289:28;;;;;;;;;;;;;:::o;437:23::-;;;;:::o",
-  "source": "pragma solidity ^0.5.0;\n\n    /*\n        The EventTicketsV2 contract keeps track of the details and ticket sales of multiple events.\n     */\ncontract VintageExplorer {\n\n    /*\n        Define an public owner variable. Set it to the creator of the contract when it is initialized.\n    */\n    address payable public owner;\n    uint   PRICE_TICKET = 100 wei;\n\n    /*\n        Create a variable to keep track of the wine ID numbers.\n    */\n    uint public idGenerator;\n    \n    /*\n        Define an Event struct, similar to the V1 of this contract.\n        The struct has 6 fields: description, website (URL), totalTickets, sales, buyers, and isOpen.\n        Choose the appropriate variable type for each field.\n        The \"buyers\" field should keep track of addresses and how many tickets each buyer purchases.\n    */\n\n    struct WineProducer {\n        string name;\n        string website;\n        address wineProducerAddress;\n        mapping (address => Wine) wines;\n        bool isOpen;\n    }\n\n    struct Wine {\n        string name;\n        WineProducer wineProducer;\n        string sku;\n        uint vintage;\n        uint totalSupply;\n        mapping (address => uint) owners;\n        bool isOpen;\n    }\n\n    /*\n        Create a mapping to keep track of the events.\n        The mapping key is an integer, the value is an Event struct.\n        Call the mapping \"events\".\n    */\n    mapping (address => WineProducer) wineProducers;\n\n    event LogWineProducerAdded(string name, address wineProducerAddress);\n    event LogWineAdded(string name, address wineProducerAddress, string sku);\n    event LogBuyWine(address buyer, uint wineId, uint numWInes);\n\n    /*\n        Create a modifier that throws an error if the msg.sender is not the owner.\n    */\n    // modifier isOwner { require(msg.sender == owner, 'msg.sender is not owner'); _; }\n\n    // modifier verifyCaller (address _address) { require (msg.sender == _address, 'msg sender is not address'); _;}\n\n    // modifier verifyWineProducer (address _address) { \n    //     require (msg.sender == _address, 'msg sender is not address');\n    //     require (wineProducers[_address], 'wine producer does not exist');\n    //     _;\n    // }\n\n    // modifier paidEnough(uint _price) { require(msg.value >= _price, 'msg value is not enough'); _;}\n\n    // constructor() public {\n    //     owner = msg.sender;\n    // }\n\n    // /*\n    //     Define a function called addEvent().\n    //     This function takes 3 parameters, an event description, a URL, and a number of tickets.\n    //     Only the contract owner should be able to call this function.\n    //     In the function:\n    //         - Set the description, URL and ticket number in a new event.\n    //         - set the event to open\n    //         - set an event ID\n    //         - increment the ID\n    //         - emit the appropriate event\n    //         - return the event's ID\n    // */\n\n    // function addWineProducer(string memory _name, string memory _website, address _wineProducerAddress)\n    //     public\n    //     isOwner()\n    // {\n    //     wineProducers[_wineProducerAddress] = WineProducer({\n    //         name : _name,\n    //         website : _website,\n    //         owner : _wineProducerAddress,\n    //         isOpen : true\n    //     });\n    //     emit LogWineProducerAdded(_name, _wineProducerAddress);\n    // }\n\n    // function addWine(address _wineProducerAddress, string memory _name, string memory _sku, uint _vintage, uint _totalSupply)\n    //     public\n    //     verifyWineProducer(_wineProducerAddress)\n    // {\n    //     wineProducers[_wineProducerAddress] = Wine({\n    //         name : _name,\n    //         sku : _sku,\n    //         vintage : _vintage,\n    //         totalSupply : _totalSupply,\n    //         isOpen : true\n    //     });\n    //     emit LogWineAdded(_name, _wineProducerAddress, _sku);\n    // }\n\n    // function removeWine(address _wineProducerAddress, string memory _name, string memory _sku, uint _vintage, uint _totalSupply)\n    //     public\n    //     verifyWineProducer(_wineProducerAddress)\n    // {\n    //     wineProducers[_wineProducerAddress] = Wine({\n    //         name : _name,\n    //         sku : _sku,\n    //         vintage : _vintage,\n    //         totalSupply : _totalSupply,\n    //         isOpen : true\n    //     });\n    //     emit LogWineAdded(_name, _wineProducerAddress, _sku);\n    // }\n\n    // /*\n    //     Define a function called readEvent().\n    //     This function takes one parameter, the event ID.\n    //     The function returns information about the event this order:\n    //         1. description\n    //         2. URL\n    //         3. ticket available\n    //         4. sales\n    //         5. isOpen\n    // */     \n    // function readEvent(uint eventId)\n    //     public\n    //     view \n    //     returns(string memory description, string memory website, uint totalTickets, uint sales, bool isOpen) \n    // {\n    //     return (\n    //         events[eventId].description,\n    //         events[eventId].website,\n    //         events[eventId].totalTickets,\n    //         events[eventId].sales,\n    //         events[eventId].isOpen\n    //     );\n    // }\n    // /*\n    //     Define a function called buyTickets().\n    //     This function allows users to buy tickets for a specific event.\n    //     This function takes 2 parameters, an event ID and a number of tickets.\n    //     The function checks:\n    //         - that the event sales are open\n    //         - that the transaction value is sufficient to purchase the number of tickets\n    //         - that there are enough tickets available to complete the purchase\n    //     The function:\n    //         - increments the purchasers ticket count\n    //         - increments the ticket sale count\n    //         - refunds any surplus value sent\n    //         - emits the appropriate event\n    // */\n\n    // function buyTickets(uint eventId, uint numberOfPurchasingTickets)\n    //     public\n    //     payable\n    // {\n        \n    //     require(events[eventId].isOpen == true, 'isOpen is false');\n    //     require(msg.value >= PRICE_TICKET * numberOfPurchasingTickets, 'not enough value sent to buy tickets');\n    //     require(events[eventId].totalTickets >= numberOfPurchasingTickets, 'Not enough tickets left');\n    //     events[eventId].buyers[msg.sender] += numberOfPurchasingTickets;\n    //     events[eventId].sales += numberOfPurchasingTickets;\n    //     events[eventId].totalTickets -= numberOfPurchasingTickets;\n    //     emit LogBuyTickets(msg.sender, eventId, numberOfPurchasingTickets);\n    //     if(msg.value - PRICE_TICKET*numberOfPurchasingTickets > 0){\n    //         uint amountToRefund = msg.value - PRICE_TICKET * numberOfPurchasingTickets;\n    //         msg.sender.transfer(amountToRefund);\n    //         emit LogGetRefund(msg.sender, eventId, amountToRefund);\n    //     }\n    // }\n\n    // /*\n    //     Define a function called getRefund().\n    //     This function allows users to request a refund for a specific event.\n    //     This function takes one parameter, the event ID.\n    //     TODO:\n    //         - check that a user has purchased tickets for the event\n    //         - remove refunded tickets from the sold count\n    //         - send appropriate value to the refund requester\n    //         - emit the appropriate event\n    // */\n\n    // function getRefund(uint eventId)\n    //     public\n    // {\n    //     uint numberOfTickets = events[eventId].buyers[msg.sender];\n    //     require(numberOfTickets > 0, 'not enough tickets');\n    //     uint amountToRefund = PRICE_TICKET * numberOfTickets;\n    //     msg.sender.transfer(amountToRefund);\n    //     emit LogGetRefund(msg.sender, eventId, amountToRefund);\n    //     events[eventId].buyers[msg.sender] -= numberOfTickets;\n    //     events[eventId].sales -= numberOfTickets;\n    //     events[eventId].totalTickets += numberOfTickets;\n    // }\n\n    // /*\n    //     Define a function called getBuyerNumberTickets()\n    //     This function takes one parameter, an event ID\n    //     This function returns a uint, the number of tickets that the msg.sender has purchased.\n    // */\n    // function getBuyerNumberTickets(uint eventId)\n    //     public\n    //     view \n    //     returns(uint purchasedTickets) \n    // {\n    //     return events[eventId].buyers[msg.sender];\n    // }\n    // /*\n    //     Define a function called endSale()\n    //     This function takes one parameter, the event ID\n    //     Only the contract owner can call this function\n    //     TODO:\n    //         - close event sales\n    //         - transfer the balance from those event sales to the contract owner\n    //         - emit the appropriate event\n    // */\n    // function endSale(uint eventId)\n    //     public\n    //     isOwner()\n    // {\n    //     events[eventId].isOpen = false;\n    //     uint balance = address(this).balance;\n    //     owner.transfer(balance);\n    //     emit LogEndSale(msg.sender, balance, eventId);\n    // }\n}\n",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"idGenerator\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"wineProducerAddress\",\"type\":\"address\"}],\"name\":\"LogWineProducerAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"wineProducerAddress\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"sku\",\"type\":\"string\"}],\"name\":\"LogWineAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"wineId\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"numWInes\",\"type\":\"uint256\"}],\"name\":\"LogBuyWine\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/git/vintage-explorer/contracts/VintageExplorer.sol\":\"VintageExplorer\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/git/vintage-explorer/contracts/VintageExplorer.sol\":{\"keccak256\":\"0x1c22e2c91a3350bba019db3164b09800e5cbeed3f99a124042612d961fab2d7b\",\"urls\":[\"bzzr://a6df31f22dfab1d929d885e0f1fb3bc4b4a6e9d5adff5a956c0a16345d21c179\"]}},\"version\":1}",
+  "bytecode": "0x6080604052606460015534801561001557600080fd5b5060f2806100246000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80638da5cb5b146037578063e7bd92b914607f575b600080fd5b603d609b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b608560c0565b6040518082815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6002548156fea165627a7a723058200c30731d04967e451de94f00e74b4534da5812c3e911eeddeb2231b63184809e0029",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80638da5cb5b146037578063e7bd92b914607f575b600080fd5b603d609b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b608560c0565b6040518082815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6002548156fea165627a7a723058200c30731d04967e451de94f00e74b4534da5812c3e911eeddeb2231b63184809e0029",
+  "sourceMap": "145:9099:3:-;;;356:7;334:29;;145:9099;8:9:-1;5:2;;;30:1;27;20:12;5:2;145:9099:3;;;;;;;",
+  "deployedSourceMap": "145:9099:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;145:9099:3;;;;;;;;;;;;;;;;;;;;;;;;299:28;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;453:23;;;:::i;:::-;;;;;;;;;;;;;;;;;;;299:28;;;;;;;;;;;;;:::o;453:23::-;;;;:::o",
+  "source": "pragma solidity ^0.5.0;\r\n\r\n    /*\r\n        The EventTicketsV2 contract keeps track of the details and ticket sales of multiple events.\r\n     */\r\ncontract VintageExplorer {\r\n\r\n    /*\r\n        Define an public owner variable. Set it to the creator of the contract when it is initialized.\r\n    */\r\n    address payable public owner;\r\n    uint   PRICE_TICKET = 100 wei;\r\n\r\n    /*\r\n        Create a variable to keep track of the wine ID numbers.\r\n    */\r\n    uint public idGenerator;\r\n    \r\n    /*\r\n        Define an Event struct, similar to the V1 of this contract.\r\n        The struct has 6 fields: description, website (URL), totalTickets, sales, buyers, and isOpen.\r\n        Choose the appropriate variable type for each field.\r\n        The \"buyers\" field should keep track of addresses and how many tickets each buyer purchases.\r\n    */\r\n\r\n    struct WineProducer {\r\n        string name;\r\n        string website;\r\n        address wineProducerAddress;\r\n        mapping (address => Wine) wines;\r\n        bool isOpen;\r\n    }\r\n\r\n    struct Wine {\r\n        string name;\r\n        WineProducer wineProducer;\r\n        string sku;\r\n        uint vintage;\r\n        uint totalSupply;\r\n        mapping (address => uint) owners;\r\n        bool isOpen;\r\n    }\r\n\r\n    /*\r\n        Create a mapping to keep track of the events.\r\n        The mapping key is an integer, the value is an Event struct.\r\n        Call the mapping \"events\".\r\n    */\r\n    mapping (address => WineProducer) wineProducers;\r\n\r\n    event LogWineProducerAdded(string name, address wineProducerAddress);\r\n    event LogWineAdded(string name, address wineProducerAddress, string sku);\r\n    event LogBuyWine(address buyer, uint wineId, uint numWInes);\r\n\r\n    /*\r\n        Create a modifier that throws an error if the msg.sender is not the owner.\r\n    */\r\n    // modifier isOwner { require(msg.sender == owner, 'msg.sender is not owner'); _; }\r\n\r\n    // modifier verifyCaller (address _address) { require (msg.sender == _address, 'msg sender is not address'); _;}\r\n\r\n    // modifier verifyWineProducer (address _address) { \r\n    //     require (msg.sender == _address, 'msg sender is not address');\r\n    //     require (wineProducers[_address], 'wine producer does not exist');\r\n    //     _;\r\n    // }\r\n\r\n    // modifier paidEnough(uint _price) { require(msg.value >= _price, 'msg value is not enough'); _;}\r\n\r\n    // constructor() public {\r\n    //     owner = msg.sender;\r\n    // }\r\n\r\n    // /*\r\n    //     Define a function called addEvent().\r\n    //     This function takes 3 parameters, an event description, a URL, and a number of tickets.\r\n    //     Only the contract owner should be able to call this function.\r\n    //     In the function:\r\n    //         - Set the description, URL and ticket number in a new event.\r\n    //         - set the event to open\r\n    //         - set an event ID\r\n    //         - increment the ID\r\n    //         - emit the appropriate event\r\n    //         - return the event's ID\r\n    // */\r\n\r\n    // function addWineProducer(string memory _name, string memory _website, address _wineProducerAddress)\r\n    //     public\r\n    //     isOwner()\r\n    // {\r\n    //     wineProducers[_wineProducerAddress] = WineProducer({\r\n    //         name : _name,\r\n    //         website : _website,\r\n    //         owner : _wineProducerAddress,\r\n    //         isOpen : true\r\n    //     });\r\n    //     emit LogWineProducerAdded(_name, _wineProducerAddress);\r\n    // }\r\n\r\n    // function addWine(address _wineProducerAddress, string memory _name, string memory _sku, uint _vintage, uint _totalSupply)\r\n    //     public\r\n    //     verifyWineProducer(_wineProducerAddress)\r\n    // {\r\n    //     wineProducers[_wineProducerAddress] = Wine({\r\n    //         name : _name,\r\n    //         sku : _sku,\r\n    //         vintage : _vintage,\r\n    //         totalSupply : _totalSupply,\r\n    //         isOpen : true\r\n    //     });\r\n    //     emit LogWineAdded(_name, _wineProducerAddress, _sku);\r\n    // }\r\n\r\n    // function removeWine(address _wineProducerAddress, string memory _name, string memory _sku, uint _vintage, uint _totalSupply)\r\n    //     public\r\n    //     verifyWineProducer(_wineProducerAddress)\r\n    // {\r\n    //     wineProducers[_wineProducerAddress] = Wine({\r\n    //         name : _name,\r\n    //         sku : _sku,\r\n    //         vintage : _vintage,\r\n    //         totalSupply : _totalSupply,\r\n    //         isOpen : true\r\n    //     });\r\n    //     emit LogWineAdded(_name, _wineProducerAddress, _sku);\r\n    // }\r\n\r\n    // /*\r\n    //     Define a function called readEvent().\r\n    //     This function takes one parameter, the event ID.\r\n    //     The function returns information about the event this order:\r\n    //         1. description\r\n    //         2. URL\r\n    //         3. ticket available\r\n    //         4. sales\r\n    //         5. isOpen\r\n    // */     \r\n    // function readEvent(uint eventId)\r\n    //     public\r\n    //     view \r\n    //     returns(string memory description, string memory website, uint totalTickets, uint sales, bool isOpen) \r\n    // {\r\n    //     return (\r\n    //         events[eventId].description,\r\n    //         events[eventId].website,\r\n    //         events[eventId].totalTickets,\r\n    //         events[eventId].sales,\r\n    //         events[eventId].isOpen\r\n    //     );\r\n    // }\r\n    // /*\r\n    //     Define a function called buyTickets().\r\n    //     This function allows users to buy tickets for a specific event.\r\n    //     This function takes 2 parameters, an event ID and a number of tickets.\r\n    //     The function checks:\r\n    //         - that the event sales are open\r\n    //         - that the transaction value is sufficient to purchase the number of tickets\r\n    //         - that there are enough tickets available to complete the purchase\r\n    //     The function:\r\n    //         - increments the purchasers ticket count\r\n    //         - increments the ticket sale count\r\n    //         - refunds any surplus value sent\r\n    //         - emits the appropriate event\r\n    // */\r\n\r\n    // function buyTickets(uint eventId, uint numberOfPurchasingTickets)\r\n    //     public\r\n    //     payable\r\n    // {\r\n        \r\n    //     require(events[eventId].isOpen == true, 'isOpen is false');\r\n    //     require(msg.value >= PRICE_TICKET * numberOfPurchasingTickets, 'not enough value sent to buy tickets');\r\n    //     require(events[eventId].totalTickets >= numberOfPurchasingTickets, 'Not enough tickets left');\r\n    //     events[eventId].buyers[msg.sender] += numberOfPurchasingTickets;\r\n    //     events[eventId].sales += numberOfPurchasingTickets;\r\n    //     events[eventId].totalTickets -= numberOfPurchasingTickets;\r\n    //     emit LogBuyTickets(msg.sender, eventId, numberOfPurchasingTickets);\r\n    //     if(msg.value - PRICE_TICKET*numberOfPurchasingTickets > 0){\r\n    //         uint amountToRefund = msg.value - PRICE_TICKET * numberOfPurchasingTickets;\r\n    //         msg.sender.transfer(amountToRefund);\r\n    //         emit LogGetRefund(msg.sender, eventId, amountToRefund);\r\n    //     }\r\n    // }\r\n\r\n    // /*\r\n    //     Define a function called getRefund().\r\n    //     This function allows users to request a refund for a specific event.\r\n    //     This function takes one parameter, the event ID.\r\n    //     TODO:\r\n    //         - check that a user has purchased tickets for the event\r\n    //         - remove refunded tickets from the sold count\r\n    //         - send appropriate value to the refund requester\r\n    //         - emit the appropriate event\r\n    // */\r\n\r\n    // function getRefund(uint eventId)\r\n    //     public\r\n    // {\r\n    //     uint numberOfTickets = events[eventId].buyers[msg.sender];\r\n    //     require(numberOfTickets > 0, 'not enough tickets');\r\n    //     uint amountToRefund = PRICE_TICKET * numberOfTickets;\r\n    //     msg.sender.transfer(amountToRefund);\r\n    //     emit LogGetRefund(msg.sender, eventId, amountToRefund);\r\n    //     events[eventId].buyers[msg.sender] -= numberOfTickets;\r\n    //     events[eventId].sales -= numberOfTickets;\r\n    //     events[eventId].totalTickets += numberOfTickets;\r\n    // }\r\n\r\n    // /*\r\n    //     Define a function called getBuyerNumberTickets()\r\n    //     This function takes one parameter, an event ID\r\n    //     This function returns a uint, the number of tickets that the msg.sender has purchased.\r\n    // */\r\n    // function getBuyerNumberTickets(uint eventId)\r\n    //     public\r\n    //     view \r\n    //     returns(uint purchasedTickets) \r\n    // {\r\n    //     return events[eventId].buyers[msg.sender];\r\n    // }\r\n    // /*\r\n    //     Define a function called endSale()\r\n    //     This function takes one parameter, the event ID\r\n    //     Only the contract owner can call this function\r\n    //     TODO:\r\n    //         - close event sales\r\n    //         - transfer the balance from those event sales to the contract owner\r\n    //         - emit the appropriate event\r\n    // */\r\n    // function endSale(uint eventId)\r\n    //     public\r\n    //     isOwner()\r\n    // {\r\n    //     events[eventId].isOpen = false;\r\n    //     uint balance = address(this).balance;\r\n    //     owner.transfer(balance);\r\n    //     emit LogEndSale(msg.sender, balance, eventId);\r\n    // }\r\n}\r\n",
   "sourcePath": "/git/vintage-explorer/contracts/VintageExplorer.sol",
   "ast": {
     "absolutePath": "/git/vintage-explorer/contracts/VintageExplorer.sol",
     "exportedSymbols": {
       "VintageExplorer": [
-        145
+        211
       ]
     },
-    "id": 146,
+    "id": 212,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 81,
+        "id": 147,
         "literals": [
           "solidity",
           "^",
@@ -117,7 +117,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:2"
+        "src": "0:23:3"
       },
       {
         "baseContracts": [],
@@ -125,20 +125,20 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 145,
+        "id": 211,
         "linearizedBaseContracts": [
-          145
+          211
         ],
         "name": "VintageExplorer",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 83,
+            "id": 149,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "289:28:2",
+            "scope": 211,
+            "src": "299:28:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -146,10 +146,10 @@
               "typeString": "address payable"
             },
             "typeName": {
-              "id": 82,
+              "id": 148,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "289:15:2",
+              "src": "299:15:3",
               "stateMutability": "payable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address_payable",
@@ -161,11 +161,11 @@
           },
           {
             "constant": false,
-            "id": 86,
+            "id": 152,
             "name": "PRICE_TICKET",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "323:29:2",
+            "scope": 211,
+            "src": "334:29:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -173,10 +173,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 84,
+              "id": 150,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
-              "src": "323:4:2",
+              "src": "334:4:3",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -185,14 +185,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "313030",
-              "id": 85,
+              "id": 151,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "345:7:2",
+              "src": "356:7:3",
               "subdenomination": "wei",
               "typeDescriptions": {
                 "typeIdentifier": "t_rational_100_by_1",
@@ -204,11 +204,11 @@
           },
           {
             "constant": false,
-            "id": 88,
+            "id": 154,
             "name": "idGenerator",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "437:23:2",
+            "scope": 211,
+            "src": "453:23:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -216,10 +216,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 87,
+              "id": 153,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
-              "src": "437:4:2",
+              "src": "453:4:3",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -230,15 +230,15 @@
           },
           {
             "canonicalName": "VintageExplorer.WineProducer",
-            "id": 101,
+            "id": 167,
             "members": [
               {
                 "constant": false,
-                "id": 90,
+                "id": 156,
                 "name": "name",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "848:11:2",
+                "scope": 167,
+                "src": "874:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -246,10 +246,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 89,
+                  "id": 155,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "848:6:2",
+                  "src": "874:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -260,11 +260,11 @@
               },
               {
                 "constant": false,
-                "id": 92,
+                "id": 158,
                 "name": "website",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "869:14:2",
+                "scope": 167,
+                "src": "896:14:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -272,10 +272,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 91,
+                  "id": 157,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "869:6:2",
+                  "src": "896:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -286,11 +286,11 @@
               },
               {
                 "constant": false,
-                "id": 94,
+                "id": 160,
                 "name": "wineProducerAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "893:27:2",
+                "scope": 167,
+                "src": "921:27:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -298,10 +298,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 93,
+                  "id": 159,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "893:7:2",
+                  "src": "921:7:3",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -313,44 +313,44 @@
               },
               {
                 "constant": false,
-                "id": 98,
+                "id": 164,
                 "name": "wines",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "930:31:2",
+                "scope": 167,
+                "src": "959:31:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$118_storage_$",
+                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$184_storage_$",
                   "typeString": "mapping(address => struct VintageExplorer.Wine)"
                 },
                 "typeName": {
-                  "id": 97,
+                  "id": 163,
                   "keyType": {
-                    "id": 95,
+                    "id": 161,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "939:7:2",
+                    "src": "968:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "930:25:2",
+                  "src": "959:25:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$118_storage_$",
+                    "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$184_storage_$",
                     "typeString": "mapping(address => struct VintageExplorer.Wine)"
                   },
                   "valueType": {
                     "contractScope": null,
-                    "id": 96,
+                    "id": 162,
                     "name": "Wine",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 118,
-                    "src": "950:4:2",
+                    "referencedDeclaration": 184,
+                    "src": "979:4:3",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Wine_$118_storage_ptr",
+                      "typeIdentifier": "t_struct$_Wine_$184_storage_ptr",
                       "typeString": "struct VintageExplorer.Wine"
                     }
                   }
@@ -360,11 +360,11 @@
               },
               {
                 "constant": false,
-                "id": 100,
+                "id": 166,
                 "name": "isOpen",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "971:11:2",
+                "scope": 167,
+                "src": "1001:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -372,10 +372,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 99,
+                  "id": 165,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "971:4:2",
+                  "src": "1001:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -387,21 +387,21 @@
             ],
             "name": "WineProducer",
             "nodeType": "StructDefinition",
-            "scope": 145,
-            "src": "818:171:2",
+            "scope": 211,
+            "src": "843:177:3",
             "visibility": "public"
           },
           {
             "canonicalName": "VintageExplorer.Wine",
-            "id": 118,
+            "id": 184,
             "members": [
               {
                 "constant": false,
-                "id": 103,
+                "id": 169,
                 "name": "name",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1017:11:2",
+                "scope": 184,
+                "src": "1051:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -409,10 +409,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 102,
+                  "id": 168,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1017:6:2",
+                  "src": "1051:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -423,26 +423,26 @@
               },
               {
                 "constant": false,
-                "id": 105,
+                "id": 171,
                 "name": "wineProducer",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1038:25:2",
+                "scope": 184,
+                "src": "1073:25:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                  "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                   "typeString": "struct VintageExplorer.WineProducer"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 104,
+                  "id": 170,
                   "name": "WineProducer",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 101,
-                  "src": "1038:12:2",
+                  "referencedDeclaration": 167,
+                  "src": "1073:12:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                    "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                     "typeString": "struct VintageExplorer.WineProducer"
                   }
                 },
@@ -451,11 +451,11 @@
               },
               {
                 "constant": false,
-                "id": 107,
+                "id": 173,
                 "name": "sku",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1073:10:2",
+                "scope": 184,
+                "src": "1109:10:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -463,10 +463,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 106,
+                  "id": 172,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1073:6:2",
+                  "src": "1109:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -477,11 +477,11 @@
               },
               {
                 "constant": false,
-                "id": 109,
+                "id": 175,
                 "name": "vintage",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1093:12:2",
+                "scope": 184,
+                "src": "1130:12:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -489,10 +489,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 108,
+                  "id": 174,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1093:4:2",
+                  "src": "1130:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -503,11 +503,11 @@
               },
               {
                 "constant": false,
-                "id": 111,
+                "id": 177,
                 "name": "totalSupply",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1115:16:2",
+                "scope": 184,
+                "src": "1153:16:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -515,10 +515,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 110,
+                  "id": 176,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1115:4:2",
+                  "src": "1153:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -529,11 +529,11 @@
               },
               {
                 "constant": false,
-                "id": 115,
+                "id": 181,
                 "name": "owners",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1141:32:2",
+                "scope": 184,
+                "src": "1180:32:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -541,28 +541,28 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 114,
+                  "id": 180,
                   "keyType": {
-                    "id": 112,
+                    "id": 178,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1150:7:2",
+                    "src": "1189:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "1141:25:2",
+                  "src": "1180:25:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 113,
+                    "id": 179,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1161:4:2",
+                    "src": "1200:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -574,11 +574,11 @@
               },
               {
                 "constant": false,
-                "id": 117,
+                "id": 183,
                 "name": "isOpen",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1183:11:2",
+                "scope": 184,
+                "src": "1223:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -586,10 +586,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 116,
+                  "id": 182,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1183:4:2",
+                  "src": "1223:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -601,50 +601,50 @@
             ],
             "name": "Wine",
             "nodeType": "StructDefinition",
-            "scope": 145,
-            "src": "995:206:2",
+            "scope": 211,
+            "src": "1028:214:3",
             "visibility": "public"
           },
           {
             "constant": false,
-            "id": 122,
+            "id": 188,
             "name": "wineProducers",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "1379:47:2",
+            "scope": 211,
+            "src": "1427:47:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$101_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$167_storage_$",
               "typeString": "mapping(address => struct VintageExplorer.WineProducer)"
             },
             "typeName": {
-              "id": 121,
+              "id": 187,
               "keyType": {
-                "id": 119,
+                "id": 185,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
-                "src": "1388:7:2",
+                "src": "1436:7:3",
                 "typeDescriptions": {
                   "typeIdentifier": "t_address",
                   "typeString": "address"
                 }
               },
               "nodeType": "Mapping",
-              "src": "1379:33:2",
+              "src": "1427:33:3",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$101_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$167_storage_$",
                 "typeString": "mapping(address => struct VintageExplorer.WineProducer)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 120,
+                "id": 186,
                 "name": "WineProducer",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 101,
-                "src": "1399:12:2",
+                "referencedDeclaration": 167,
+                "src": "1447:12:3",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                  "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                   "typeString": "struct VintageExplorer.WineProducer"
                 }
               }
@@ -655,21 +655,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 128,
+            "id": 194,
             "name": "LogWineProducerAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 127,
+              "id": 193,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 124,
+                  "id": 190,
                   "indexed": false,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 128,
-                  "src": "1460:11:2",
+                  "scope": 194,
+                  "src": "1510:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -677,10 +677,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 123,
+                    "id": 189,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1460:6:2",
+                    "src": "1510:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -691,12 +691,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 126,
+                  "id": 192,
                   "indexed": false,
                   "name": "wineProducerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 128,
-                  "src": "1473:27:2",
+                  "scope": 194,
+                  "src": "1523:27:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -704,10 +704,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 125,
+                    "id": 191,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1473:7:2",
+                    "src": "1523:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -718,28 +718,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1459:42:2"
+              "src": "1509:42:3"
             },
-            "src": "1433:69:2"
+            "src": "1483:69:3"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 136,
+            "id": 202,
             "name": "LogWineAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 135,
+              "id": 201,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 130,
+                  "id": 196,
                   "indexed": false,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1526:11:2",
+                  "scope": 202,
+                  "src": "1577:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -747,10 +747,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 129,
+                    "id": 195,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1526:6:2",
+                    "src": "1577:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -761,12 +761,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 132,
+                  "id": 198,
                   "indexed": false,
                   "name": "wineProducerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1539:27:2",
+                  "scope": 202,
+                  "src": "1590:27:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -774,10 +774,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 131,
+                    "id": 197,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1539:7:2",
+                    "src": "1590:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -789,12 +789,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 134,
+                  "id": 200,
                   "indexed": false,
                   "name": "sku",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1568:10:2",
+                  "scope": 202,
+                  "src": "1619:10:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -802,10 +802,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 133,
+                    "id": 199,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1568:6:2",
+                    "src": "1619:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -815,28 +815,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1525:54:2"
+              "src": "1576:54:3"
             },
-            "src": "1507:73:2"
+            "src": "1558:73:3"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 144,
+            "id": 210,
             "name": "LogBuyWine",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 143,
+              "id": 209,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 138,
+                  "id": 204,
                   "indexed": false,
                   "name": "buyer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1602:13:2",
+                  "scope": 210,
+                  "src": "1654:13:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -844,10 +844,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 137,
+                    "id": 203,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1602:7:2",
+                    "src": "1654:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -859,12 +859,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 140,
+                  "id": 206,
                   "indexed": false,
                   "name": "wineId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1617:11:2",
+                  "scope": 210,
+                  "src": "1669:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -872,10 +872,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 139,
+                    "id": 205,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1617:4:2",
+                    "src": "1669:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -886,12 +886,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 142,
+                  "id": 208,
                   "indexed": false,
                   "name": "numWInes",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1630:13:2",
+                  "scope": 210,
+                  "src": "1682:13:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -899,10 +899,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 141,
+                    "id": 207,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1630:4:2",
+                    "src": "1682:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -912,29 +912,29 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1601:43:2"
+              "src": "1653:43:3"
             },
-            "src": "1585:60:2"
+            "src": "1637:60:3"
           }
         ],
-        "scope": 146,
-        "src": "140:8866:2"
+        "scope": 212,
+        "src": "145:9099:3"
       }
     ],
-    "src": "0:9007:2"
+    "src": "0:9246:3"
   },
   "legacyAST": {
     "absolutePath": "/git/vintage-explorer/contracts/VintageExplorer.sol",
     "exportedSymbols": {
       "VintageExplorer": [
-        145
+        211
       ]
     },
-    "id": 146,
+    "id": 212,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 81,
+        "id": 147,
         "literals": [
           "solidity",
           "^",
@@ -942,7 +942,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:2"
+        "src": "0:23:3"
       },
       {
         "baseContracts": [],
@@ -950,20 +950,20 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 145,
+        "id": 211,
         "linearizedBaseContracts": [
-          145
+          211
         ],
         "name": "VintageExplorer",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 83,
+            "id": 149,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "289:28:2",
+            "scope": 211,
+            "src": "299:28:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -971,10 +971,10 @@
               "typeString": "address payable"
             },
             "typeName": {
-              "id": 82,
+              "id": 148,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "289:15:2",
+              "src": "299:15:3",
               "stateMutability": "payable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address_payable",
@@ -986,11 +986,11 @@
           },
           {
             "constant": false,
-            "id": 86,
+            "id": 152,
             "name": "PRICE_TICKET",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "323:29:2",
+            "scope": 211,
+            "src": "334:29:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -998,10 +998,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 84,
+              "id": 150,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
-              "src": "323:4:2",
+              "src": "334:4:3",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -1010,14 +1010,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "313030",
-              "id": 85,
+              "id": 151,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "345:7:2",
+              "src": "356:7:3",
               "subdenomination": "wei",
               "typeDescriptions": {
                 "typeIdentifier": "t_rational_100_by_1",
@@ -1029,11 +1029,11 @@
           },
           {
             "constant": false,
-            "id": 88,
+            "id": 154,
             "name": "idGenerator",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "437:23:2",
+            "scope": 211,
+            "src": "453:23:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1041,10 +1041,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 87,
+              "id": 153,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
-              "src": "437:4:2",
+              "src": "453:4:3",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -1055,15 +1055,15 @@
           },
           {
             "canonicalName": "VintageExplorer.WineProducer",
-            "id": 101,
+            "id": 167,
             "members": [
               {
                 "constant": false,
-                "id": 90,
+                "id": 156,
                 "name": "name",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "848:11:2",
+                "scope": 167,
+                "src": "874:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1071,10 +1071,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 89,
+                  "id": 155,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "848:6:2",
+                  "src": "874:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -1085,11 +1085,11 @@
               },
               {
                 "constant": false,
-                "id": 92,
+                "id": 158,
                 "name": "website",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "869:14:2",
+                "scope": 167,
+                "src": "896:14:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1097,10 +1097,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 91,
+                  "id": 157,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "869:6:2",
+                  "src": "896:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -1111,11 +1111,11 @@
               },
               {
                 "constant": false,
-                "id": 94,
+                "id": 160,
                 "name": "wineProducerAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "893:27:2",
+                "scope": 167,
+                "src": "921:27:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1123,10 +1123,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 93,
+                  "id": 159,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "893:7:2",
+                  "src": "921:7:3",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -1138,44 +1138,44 @@
               },
               {
                 "constant": false,
-                "id": 98,
+                "id": 164,
                 "name": "wines",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "930:31:2",
+                "scope": 167,
+                "src": "959:31:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$118_storage_$",
+                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$184_storage_$",
                   "typeString": "mapping(address => struct VintageExplorer.Wine)"
                 },
                 "typeName": {
-                  "id": 97,
+                  "id": 163,
                   "keyType": {
-                    "id": 95,
+                    "id": 161,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "939:7:2",
+                    "src": "968:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "930:25:2",
+                  "src": "959:25:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$118_storage_$",
+                    "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Wine_$184_storage_$",
                     "typeString": "mapping(address => struct VintageExplorer.Wine)"
                   },
                   "valueType": {
                     "contractScope": null,
-                    "id": 96,
+                    "id": 162,
                     "name": "Wine",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 118,
-                    "src": "950:4:2",
+                    "referencedDeclaration": 184,
+                    "src": "979:4:3",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Wine_$118_storage_ptr",
+                      "typeIdentifier": "t_struct$_Wine_$184_storage_ptr",
                       "typeString": "struct VintageExplorer.Wine"
                     }
                   }
@@ -1185,11 +1185,11 @@
               },
               {
                 "constant": false,
-                "id": 100,
+                "id": 166,
                 "name": "isOpen",
                 "nodeType": "VariableDeclaration",
-                "scope": 101,
-                "src": "971:11:2",
+                "scope": 167,
+                "src": "1001:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1197,10 +1197,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 99,
+                  "id": 165,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "971:4:2",
+                  "src": "1001:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -1212,21 +1212,21 @@
             ],
             "name": "WineProducer",
             "nodeType": "StructDefinition",
-            "scope": 145,
-            "src": "818:171:2",
+            "scope": 211,
+            "src": "843:177:3",
             "visibility": "public"
           },
           {
             "canonicalName": "VintageExplorer.Wine",
-            "id": 118,
+            "id": 184,
             "members": [
               {
                 "constant": false,
-                "id": 103,
+                "id": 169,
                 "name": "name",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1017:11:2",
+                "scope": 184,
+                "src": "1051:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1234,10 +1234,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 102,
+                  "id": 168,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1017:6:2",
+                  "src": "1051:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -1248,26 +1248,26 @@
               },
               {
                 "constant": false,
-                "id": 105,
+                "id": 171,
                 "name": "wineProducer",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1038:25:2",
+                "scope": 184,
+                "src": "1073:25:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                  "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                   "typeString": "struct VintageExplorer.WineProducer"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 104,
+                  "id": 170,
                   "name": "WineProducer",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 101,
-                  "src": "1038:12:2",
+                  "referencedDeclaration": 167,
+                  "src": "1073:12:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                    "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                     "typeString": "struct VintageExplorer.WineProducer"
                   }
                 },
@@ -1276,11 +1276,11 @@
               },
               {
                 "constant": false,
-                "id": 107,
+                "id": 173,
                 "name": "sku",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1073:10:2",
+                "scope": 184,
+                "src": "1109:10:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1288,10 +1288,10 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 106,
+                  "id": 172,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1073:6:2",
+                  "src": "1109:6:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_storage_ptr",
                     "typeString": "string"
@@ -1302,11 +1302,11 @@
               },
               {
                 "constant": false,
-                "id": 109,
+                "id": 175,
                 "name": "vintage",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1093:12:2",
+                "scope": 184,
+                "src": "1130:12:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1314,10 +1314,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 108,
+                  "id": 174,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1093:4:2",
+                  "src": "1130:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1328,11 +1328,11 @@
               },
               {
                 "constant": false,
-                "id": 111,
+                "id": 177,
                 "name": "totalSupply",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1115:16:2",
+                "scope": 184,
+                "src": "1153:16:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1340,10 +1340,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 110,
+                  "id": 176,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1115:4:2",
+                  "src": "1153:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1354,11 +1354,11 @@
               },
               {
                 "constant": false,
-                "id": 115,
+                "id": 181,
                 "name": "owners",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1141:32:2",
+                "scope": 184,
+                "src": "1180:32:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1366,28 +1366,28 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 114,
+                  "id": 180,
                   "keyType": {
-                    "id": 112,
+                    "id": 178,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1150:7:2",
+                    "src": "1189:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "Mapping",
-                  "src": "1141:25:2",
+                  "src": "1180:25:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 113,
+                    "id": 179,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1161:4:2",
+                    "src": "1200:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1399,11 +1399,11 @@
               },
               {
                 "constant": false,
-                "id": 117,
+                "id": 183,
                 "name": "isOpen",
                 "nodeType": "VariableDeclaration",
-                "scope": 118,
-                "src": "1183:11:2",
+                "scope": 184,
+                "src": "1223:11:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1411,10 +1411,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 116,
+                  "id": 182,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1183:4:2",
+                  "src": "1223:4:3",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -1426,50 +1426,50 @@
             ],
             "name": "Wine",
             "nodeType": "StructDefinition",
-            "scope": 145,
-            "src": "995:206:2",
+            "scope": 211,
+            "src": "1028:214:3",
             "visibility": "public"
           },
           {
             "constant": false,
-            "id": 122,
+            "id": 188,
             "name": "wineProducers",
             "nodeType": "VariableDeclaration",
-            "scope": 145,
-            "src": "1379:47:2",
+            "scope": 211,
+            "src": "1427:47:3",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$101_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$167_storage_$",
               "typeString": "mapping(address => struct VintageExplorer.WineProducer)"
             },
             "typeName": {
-              "id": 121,
+              "id": 187,
               "keyType": {
-                "id": 119,
+                "id": 185,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
-                "src": "1388:7:2",
+                "src": "1436:7:3",
                 "typeDescriptions": {
                   "typeIdentifier": "t_address",
                   "typeString": "address"
                 }
               },
               "nodeType": "Mapping",
-              "src": "1379:33:2",
+              "src": "1427:33:3",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$101_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_WineProducer_$167_storage_$",
                 "typeString": "mapping(address => struct VintageExplorer.WineProducer)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 120,
+                "id": 186,
                 "name": "WineProducer",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 101,
-                "src": "1399:12:2",
+                "referencedDeclaration": 167,
+                "src": "1447:12:3",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_WineProducer_$101_storage_ptr",
+                  "typeIdentifier": "t_struct$_WineProducer_$167_storage_ptr",
                   "typeString": "struct VintageExplorer.WineProducer"
                 }
               }
@@ -1480,21 +1480,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 128,
+            "id": 194,
             "name": "LogWineProducerAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 127,
+              "id": 193,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 124,
+                  "id": 190,
                   "indexed": false,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 128,
-                  "src": "1460:11:2",
+                  "scope": 194,
+                  "src": "1510:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1502,10 +1502,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 123,
+                    "id": 189,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1460:6:2",
+                    "src": "1510:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1516,12 +1516,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 126,
+                  "id": 192,
                   "indexed": false,
                   "name": "wineProducerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 128,
-                  "src": "1473:27:2",
+                  "scope": 194,
+                  "src": "1523:27:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1529,10 +1529,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 125,
+                    "id": 191,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1473:7:2",
+                    "src": "1523:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1543,28 +1543,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1459:42:2"
+              "src": "1509:42:3"
             },
-            "src": "1433:69:2"
+            "src": "1483:69:3"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 136,
+            "id": 202,
             "name": "LogWineAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 135,
+              "id": 201,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 130,
+                  "id": 196,
                   "indexed": false,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1526:11:2",
+                  "scope": 202,
+                  "src": "1577:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1572,10 +1572,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 129,
+                    "id": 195,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1526:6:2",
+                    "src": "1577:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1586,12 +1586,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 132,
+                  "id": 198,
                   "indexed": false,
                   "name": "wineProducerAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1539:27:2",
+                  "scope": 202,
+                  "src": "1590:27:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1599,10 +1599,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 131,
+                    "id": 197,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1539:7:2",
+                    "src": "1590:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1614,12 +1614,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 134,
+                  "id": 200,
                   "indexed": false,
                   "name": "sku",
                   "nodeType": "VariableDeclaration",
-                  "scope": 136,
-                  "src": "1568:10:2",
+                  "scope": 202,
+                  "src": "1619:10:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1627,10 +1627,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 133,
+                    "id": 199,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1568:6:2",
+                    "src": "1619:6:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1640,28 +1640,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1525:54:2"
+              "src": "1576:54:3"
             },
-            "src": "1507:73:2"
+            "src": "1558:73:3"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 144,
+            "id": 210,
             "name": "LogBuyWine",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 143,
+              "id": 209,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 138,
+                  "id": 204,
                   "indexed": false,
                   "name": "buyer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1602:13:2",
+                  "scope": 210,
+                  "src": "1654:13:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1669,10 +1669,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 137,
+                    "id": 203,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1602:7:2",
+                    "src": "1654:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1684,12 +1684,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 140,
+                  "id": 206,
                   "indexed": false,
                   "name": "wineId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1617:11:2",
+                  "scope": 210,
+                  "src": "1669:11:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1697,10 +1697,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 139,
+                    "id": 205,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1617:4:2",
+                    "src": "1669:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1711,12 +1711,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 142,
+                  "id": 208,
                   "indexed": false,
                   "name": "numWInes",
                   "nodeType": "VariableDeclaration",
-                  "scope": 144,
-                  "src": "1630:13:2",
+                  "scope": 210,
+                  "src": "1682:13:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1724,10 +1724,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 141,
+                    "id": 207,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1630:4:2",
+                    "src": "1682:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1737,16 +1737,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1601:43:2"
+              "src": "1653:43:3"
             },
-            "src": "1585:60:2"
+            "src": "1637:60:3"
           }
         ],
-        "scope": 146,
-        "src": "140:8866:2"
+        "scope": 212,
+        "src": "145:9099:3"
       }
     ],
-    "src": "0:9007:2"
+    "src": "0:9246:3"
   },
   "compiler": {
     "name": "solc",
@@ -1754,7 +1754,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-07-14T23:49:34.682Z",
+  "updatedAt": "2019-07-15T00:07:00.637Z",
   "devdoc": {
     "methods": {}
   },
