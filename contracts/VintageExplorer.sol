@@ -13,7 +13,7 @@ contract VintageExplorer{
     address backendContract;
     address[] previousBackends;
 
-    uint   PRICE_TICKET = 100 wei;
+    uint   ONE_ETH = 1000000000000000000 wei;
 
     /*
         Create a variable to keep track of the wine ID numbers.
@@ -31,7 +31,7 @@ contract VintageExplorer{
     struct WineProducer {
         string name;
         string website;
-        address wineProducerAddress;
+        address wineProducer;
         uint numWines;
         mapping (uint => Wine) wines;
         bool exists;
@@ -59,14 +59,13 @@ contract VintageExplorer{
     */
     mapping (uint => WineProducer) wineProducers;
 
-    event LogWineProducerAdded(string name, address wineProducerAddress, uint wineProducerId);
-    event LogWineAdded(string name, address wineProducerAddress, string sku, uint wineId);
-    event LogWineReOpened(string name, address wineProducerAddress, uint wineId);
-    event LogWineClosed(string name, address wineProducerAddress, uint wineId);
+    event LogWineProducerAdded(string name, address wineProducer, uint wineProducerId);
+    event LogWineAdded(string name, address wineProducer, string sku, uint wineId);
+    event LogWineReOpened(string name, address wineProducer, uint wineId);
+    event LogWineClosed(string name, address wineProducer, uint wineId);
     event LogBuyWine(address buyer,uint wineProducerId, uint wineId, uint numWInes);
     event LogGetRefund(address buyer,uint wineProducerId, uint wineId, uint amountToRefund);
-    event LogEndSale(address wineProducerAddress,uint balance, uint wineProducerId, uint wineId);
-    
+    event LogEndSale(address wineProducer,uint balance, uint wineProducerId, uint wineId);
 
     /*
         Create a modifier that throws an error if the msg.sender is not the owner.
@@ -78,9 +77,9 @@ contract VintageExplorer{
 
     modifier verifyCaller (address _address) { require (msg.sender == _address, 'msg sender is not address'); _;}
 
-    modifier verifyWineProducer (uint _wineProducerId) {
+    modifier onlyWineProducer (uint _wineProducerId) {
         require (wineProducers[_wineProducerId].exists, 'wine producer does not exist');
-        require (wineProducers[_wineProducerId].wineProducerAddress == msg.sender, 'wine producer address does not match');
+        require (wineProducers[_wineProducerId].wineProducer == msg.sender, 'wine producer address does not match');
         _;
     }
 
@@ -138,7 +137,7 @@ contract VintageExplorer{
             - return the event's ID
     */
 
-    function addWineProducer(string memory _name, string memory _website, address _wineProducerAddress)
+    function addWineProducer(string memory _name, string memory _website, address _wineProducer)
         public
         onlyAdmin()
         returns(uint)
@@ -147,20 +146,20 @@ contract VintageExplorer{
         wineProducers[newId] = WineProducer({
             name : _name,
             website : _website,
-            wineProducerAddress : _wineProducerAddress,
+            wineProducer : _wineProducer,
             numWines : 0,
             exists : true,
             isOpen : true
         });
-        emit LogWineProducerAdded(_name, _wineProducerAddress, newId);
+        emit LogWineProducerAdded(_name, _wineProducer, newId);
         numWineProducers++;
         return newId;
     }
 
-    function addWine(address _wineProducerAddress, uint wineProducerId, string memory _name,
-        string memory _description, string memory _sku, uint _vintage, uint _totalSupply, uint _price)
+    function addWine(uint wineProducerId, string memory _name,
+        string memory _description, string memory _sku, uint _vintage, uint _totalSupply, uint _priceEth)
         public
-        verifyWineProducer(wineProducerId)
+        onlyWineProducer(wineProducerId)
         returns(uint)
     {
         uint newId = wineProducers[wineProducerId].numWines;
@@ -171,32 +170,34 @@ contract VintageExplorer{
             sku : _sku,
             vintage : _vintage,
             totalSupply : _totalSupply,
-            price : _price,
+            price : _priceEth,
             totalSales : 0,
             exists : true,
             isOpen : true
         });
-        emit LogWineAdded(_name, _wineProducerAddress, _sku, newId);
+        emit LogWineAdded(_name, msg.sender, _sku, newId);
         wineProducers[wineProducerId].numWines++;
         return newId;
     }
 
-    function reOpenWine(address _wineProducerAddress, uint _wineProducerId, uint _wineId)
+    function reOpenWine(uint _wineProducerId, uint _wineId)
         public
-        verifyWineProducer(_wineProducerId)
+        onlyWineProducer(_wineProducerId)
+        checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
     {
         require(_wineId >= 0, "wineId is not greater than or equal to 0");
         wineProducers[_wineProducerId].isOpen = false;
-        emit LogWineReOpened(wineProducers[_wineProducerId].name, _wineProducerAddress, _wineId);
+        emit LogWineReOpened(wineProducers[_wineProducerId].name, msg.sender, _wineId);
     }
 
-    function closeWine(address _wineProducerAddress, uint _wineProducerId, uint _wineId)
+    function closeWine(uint _wineProducerId, uint _wineId)
         public
-        verifyWineProducer( _wineProducerId)
+        onlyWineProducer( _wineProducerId)
+        checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
     {
         require(_wineId >= 0, "wineId is not greater than or equal to 0");
         wineProducers[_wineProducerId].isOpen = true;
-        emit LogWineReOpened(wineProducers[_wineProducerId].name, _wineProducerAddress, _wineId);
+        emit LogWineReOpened(wineProducers[_wineProducerId].name, msg.sender, _wineId);
     }
 
     /*
@@ -213,12 +214,11 @@ contract VintageExplorer{
         public
         view
         returns(string memory name, string memory website,
-        address wineProducerAddress, uint numWines, bool isOpen)
+        uint numWines, bool isOpen)
     {
         return (
             wineProducers[wineProducerId].name,
             wineProducers[wineProducerId].website,
-            wineProducers[wineProducerId].wineProducerAddress,
             wineProducers[wineProducerId].numWines,
             wineProducers[wineProducerId].isOpen
         );
@@ -270,7 +270,7 @@ contract VintageExplorer{
         payable
         checkIfWineProducerAndWineExists(wineProducerId, wineId)
     {
-        uint winePrice = wineProducers[wineProducerId].wines[wineId].price;
+        uint winePrice = (wineProducers[wineProducerId].wines[wineId].price) * ONE_ETH;
         require(msg.value >=
             winePrice * numberOfPurchasingWines,
             'not enough value sent to buy wines');
@@ -339,11 +339,11 @@ contract VintageExplorer{
     // */
     function endSale(uint wineProducerId, uint wineId)
         public
-        verifyWineProducer(wineProducerId)
+        onlyWineProducer(wineProducerId)
         checkIfWineProducerAndWineExists(wineProducerId, wineId)
     {
         wineProducers[wineProducerId].wines[wineId].isOpen = false;
-        uint balance = address(wineProducers[wineProducerId].wineProducerAddress).balance;
+        uint balance = address(wineProducers[wineProducerId].wineProducer).balance;
         owner.transfer(balance);
         emit LogEndSale(msg.sender, balance, wineProducerId, wineId);
     }
