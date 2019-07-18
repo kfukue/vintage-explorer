@@ -2,16 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
-import App from './App'
-import Wines from './page/wines/wines'
-import Admin from './page/admin/admin'
+import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import App from './App';
+import Wines from './page/wines/wines';
+import Admin from './page/admin/admin';
+import WineProducer from './page/wineProducer/wineProducer';
+import User from './page/user/user';
 const routing = (
   <Router>
     <div>
       <Route path="/" component={App} />
-      <Route path="/wines" component={Wines} />
       <Route path="/admin" component={Admin} />
+      <Route path="/wineProducers" component={WineProducer} />
+      <Route path="/user" component={User} />
     </div>
   </Router>
 )

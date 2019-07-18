@@ -13,7 +13,7 @@ contract VintageExplorer{
     address backendContract;
     address[] previousBackends;
 
-    uint   ONE_ETH = 1000000000000000000 wei;
+    uint ONE_WEI = 1 wei;
 
     /*
         Create a variable to keep track of the wine ID numbers.
@@ -233,23 +233,37 @@ contract VintageExplorer{
             4. sales
             5. isOpen
     */
-    function readWine(uint wineProducerId, uint wineId)
+    function readWineDescription(uint _wineProducerId, uint _wineId)
         public
         view
+        checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
         returns(string memory name, string memory description,
-        string memory sku, uint vintage, uint totalSupply, bool isOpen)
+        string memory sku, uint vintage,
+        bool isOpen)
     {
         return (
-            wineProducers[wineProducerId].wines[wineId].name,
-            wineProducers[wineProducerId].wines[wineId].description,
-            wineProducers[wineProducerId].wines[wineId].sku,
-            wineProducers[wineProducerId].wines[wineId].vintage,
-            wineProducers[wineProducerId].wines[wineId].totalSupply,
-            wineProducers[wineProducerId].wines[wineId].isOpen
+            wineProducers[_wineProducerId].wines[_wineId].name,
+            wineProducers[_wineProducerId].wines[_wineId].description,
+            wineProducers[_wineProducerId].wines[_wineId].sku,
+            wineProducers[_wineProducerId].wines[_wineId].vintage,
+            wineProducers[_wineProducerId].wines[_wineId].isOpen
         );
     }
-    
-    
+
+    function readWineSalesRelated(uint _wineProducerId, uint _wineId)
+        public
+        view
+        checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
+        returns(string memory name, uint totalSupply,
+        uint price, uint totalSales)
+    {
+        return (
+            wineProducers[_wineProducerId].wines[_wineId].name,
+            wineProducers[_wineProducerId].wines[_wineId].totalSupply,
+            wineProducers[_wineProducerId].wines[_wineId].price,
+            wineProducers[_wineProducerId].wines[_wineId].totalSales
+        );
+    }
     /*
         Define a function called buyTickets().
         This function allows users to buy tickets for a specific event.
@@ -270,7 +284,7 @@ contract VintageExplorer{
         payable
         checkIfWineProducerAndWineExists(wineProducerId, wineId)
     {
-        uint winePrice = (wineProducers[wineProducerId].wines[wineId].price) * ONE_ETH;
+        uint winePrice = (wineProducers[wineProducerId].wines[wineId].price) * ONE_WEI;
         require(msg.value >=
             winePrice * numberOfPurchasingWines,
             'not enough value sent to buy wines');
@@ -305,7 +319,7 @@ contract VintageExplorer{
         checkIfWineProducerAndWineExists(wineProducerId, wineId)
     {
         uint numberOfWines = wineProducers[wineProducerId].wines[wineId].owners[msg.sender];
-        uint winePrice = wineProducers[wineProducerId].wines[wineId].price;
+        uint winePrice = wineProducers[wineProducerId].wines[wineId].price * ONE_WEI;
         require(numberOfWines > 0, 'not enough wines');
         uint amountToRefund = winePrice * numberOfWines;
         msg.sender.transfer(amountToRefund);

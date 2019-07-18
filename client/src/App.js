@@ -71,7 +71,7 @@ class App extends Component {
     return (
       <div className="App">
         <CustomToolBar></CustomToolBar>
-        <h1>Good to Go!</h1>
+        {/* <h1>Good to Go!</h1>
         <p>Your Truffle Box is installed and ready.</p>
         <h2>Smart Contract Example</h2>
         <p>
@@ -84,7 +84,7 @@ class App extends Component {
         <div>The stored value is: {this.state.storageValue}</div>
         <Button onClick ={this.handleClick.bind(this)} size={'medium'}>
               Add storage by 10
-        </Button>
+        </Button> */}
       </div>
     );
   }
