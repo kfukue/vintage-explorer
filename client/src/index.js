@@ -12,9 +12,9 @@ const routing = (
   <Router>
     <div>
       <Route path="/" component={App} />
-      <Route path="/admin" component={Admin} />
+      {/* <Route path="/admin" component={Admin} />
       <Route path="/wineProducers" component={WineProducer} />
-      <Route path="/user" component={User} />
+      <Route path="/user" component={User} /> */}
     </div>
   </Router>
 )

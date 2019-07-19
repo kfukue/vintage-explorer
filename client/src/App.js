@@ -5,8 +5,16 @@ import { Button } from 'rimble-ui'
 import CustomToolBar from "./header/customToolBar/CustomToolBar.js";
 
 import "./App.css";
-
+import Container from '@material-ui/core/Container';
+import Wines from './page/wines/wines';
+import Admin from './page/admin/admin';
+import WineProducer from './page/wineProducer/wineProducer';
+import User from './page/user/user';
+import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 class App extends Component {
+  constructor(props){
+    super(props);
+  }
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
 
   componentDidMount = async () => {
@@ -69,14 +77,23 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <div className="App">
-        <CustomToolBar></CustomToolBar>
-        <div className="content">
-          <h1>Good to Go!</h1>
+      <Router>
+        <div className="App">
+          <CustomToolBar></CustomToolBar>
+          <Container fixed>
+              <div className="content">
+                <h1>Good to Go!</h1>
+                <Switch>
+                  <Route path="/admin" component={Admin} />
+                  <Route path="/wineProducers" component={WineProducer} />
+                  <Route path="/user" component={User} />
+                </Switch>
+              </div>
+          </Container>
         </div>
-      </div>
+      </Router>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
