@@ -8,6 +8,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -35,6 +39,11 @@ export default function Admin() {
       direction="row"
       justify="center"
       alignItems="center">
+        <FormControl>
+          <InputLabel htmlFor="my-input">Email address</InputLabel>
+          <Input id="my-input" aria-describedby="my-helper-text" />
+          <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
+        </FormControl>
         <Grid item xs>
           <Paper className={classes.paper}>xs</Paper>
         </Grid>

@@ -50,7 +50,7 @@ export default function ButtonAppBar(props) {
                 <Link to="/">Home</Link>
               </Typography>
               <Typography variant="h6" className={classes.title}>
-                <Link to="/wines">Wines</Link>
+                <Link to="/wineProducers">Wine Prodcuers</Link>
               </Typography>
               <Typography variant="h6" className={classes.title}>
                 <Link to="/admin">Admin</Link>

@@ -4,7 +4,12 @@ pragma solidity ^0.5.0;
         The EventTicketsV2 contract keeps track of the details and ticket sales of multiple events.
      */
 contract VintageExplorer{
-
+    enum WineTypes {
+        Red,
+        White,
+        Rose,
+        Sparkling
+    }
     /*
         Define an public owner variable. Set it to the creator of the contract when it is initialized.
     */
@@ -44,6 +49,7 @@ contract VintageExplorer{
         string sku;
         uint vintage;
         uint totalSupply;
+        WineTypes wineType;
         mapping (address => uint) owners;
         uint price;
         uint totalSales;
@@ -157,7 +163,8 @@ contract VintageExplorer{
     }
 
     function addWine(uint wineProducerId, string memory _name,
-        string memory _description, string memory _sku, uint _vintage, uint _totalSupply, uint _priceEth)
+        string memory _description, string memory _sku, uint _vintage,
+        WineTypes _wineType, uint _totalSupply, uint _priceEth)
         public
         onlyWineProducer(wineProducerId)
         returns(uint)
@@ -170,6 +177,7 @@ contract VintageExplorer{
             sku : _sku,
             vintage : _vintage,
             totalSupply : _totalSupply,
+            wineType : _wineType,
             price : _priceEth,
             totalSales : 0,
             exists : true,
@@ -238,15 +246,15 @@ contract VintageExplorer{
         view
         checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
         returns(string memory name, string memory description,
-        string memory sku, uint vintage,
-        bool isOpen)
+        string memory sku, uint vintage, WineTypes wineType
+        )
     {
         return (
             wineProducers[_wineProducerId].wines[_wineId].name,
             wineProducers[_wineProducerId].wines[_wineId].description,
             wineProducers[_wineProducerId].wines[_wineId].sku,
             wineProducers[_wineProducerId].wines[_wineId].vintage,
-            wineProducers[_wineProducerId].wines[_wineId].isOpen
+            wineProducers[_wineProducerId].wines[_wineId].wineType
         );
     }
 
@@ -264,6 +272,19 @@ contract VintageExplorer{
             wineProducers[_wineProducerId].wines[_wineId].totalSales
         );
     }
+
+    function checkIfWineIsOpen(uint _wineProducerId, uint _wineId)
+        public
+        view
+        checkIfWineProducerAndWineExists(_wineProducerId, _wineId)
+        returns(bool isOpen)
+    {
+        return (
+            wineProducers[_wineProducerId].wines[_wineId].isOpen
+        );
+    }
+
+    
     /*
         Define a function called buyTickets().
         This function allows users to buy tickets for a specific event.
