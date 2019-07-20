@@ -14,8 +14,8 @@ import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-
 class App extends Component {
   constructor(props){
     super(props);
+    this.state = { storageValue: 0, web3: null, accounts: null, contract: null };
   }
-  state = { storageValue: 0, web3: null, accounts: null, contract: null };
 
   componentDidMount = async () => {
     try {
@@ -49,13 +49,13 @@ class App extends Component {
     const { accounts, contract } = this.state;
 
     // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0] });
+    // await contract.methods.set(5).send({ from: accounts[0] });
 
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
+    // // Get the value from the contract to prove it worked.
+    // const response = await contract.methods.get().call();
 
-    // Update state with the result.
-    this.setState({ storageValue: response });
+    // // Update state with the result.
+    // this.setState({ storageValue: response });
   };
 
   handleClick= async (event) => {
@@ -77,23 +77,23 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <Router>
         <div className="App">
-          <CustomToolBar></CustomToolBar>
-          <Container fixed>
-              <div className="content">
-                <h1>Good to Go!</h1>
-                <Switch>
-                  <Route path="/admin" component={Admin} />
-                  <Route path="/wineProducers" component={WineProducer} />
-                  <Route path="/user" component={User} />
-                </Switch>
-              </div>
-          </Container>
+          <Router>
+                <CustomToolBar></CustomToolBar>
+                <Container fixed>
+                    <div className="content">
+                      <h1>Good to Go!</h1>
+          <Switch>
+                        <Route  path="/admin" component={Admin} />
+                        {/* <Route exact path="/wineProducers" component={WineProducer} />
+                        <Route exact path="/user" component={User} /> */}
+          </Switch>
+                    </div>
+                </Container>
+          </Router>
         </div>
-      </Router>
     );
   }
 }
 
-export default withRouter(App);
+export default App;
