@@ -208,6 +208,13 @@ contract VintageExplorer{
         emit LogWineReOpened(wineProducers[_wineProducerId].name, msg.sender, _wineId);
     }
 
+    function readTotalNumberOfWineProducers()
+        public
+        view
+        returns(uint)
+    {
+        return numWineProducers;
+    }
     /*
         Define a function called readEvent().
         This function takes one parameter, the event ID.

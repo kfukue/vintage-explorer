@@ -21,7 +21,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import * as Wine from '../../constants/wine'
-import WineProducerForm from '../wineProducer/wineProducer-form/wineProducer-form';
+import WineProducerForm from './wineProducer-form/wineProducer-form';
 import withStyles from "@material-ui/core/styles/withStyles";
 const ranges = [
   {
@@ -75,7 +75,7 @@ const styles = theme => ({
 });
 
 class Admin extends Component {
-    constructor(props){
+    constructor(props, state){
       super(props);
       // this.state = {value: ''};
       // this.handleChange = this.handleChange.bind(this);
@@ -107,8 +107,7 @@ class Admin extends Component {
           justify="center"
           alignItems="center">
             <Grid item xs>
-              <WineProducerForm>
-
+              <WineProducerForm {...this.props}>
               </WineProducerForm>
             </Grid>
               {/* <TextField
