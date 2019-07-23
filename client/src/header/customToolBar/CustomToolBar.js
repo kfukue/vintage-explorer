@@ -37,23 +37,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
+function ShowAdminLink() {
+  const classes = useStyles();
+  return (
+    <Typography variant="h6" className={classes.title}>
+      <Link to="/admin">Admin</Link>
+    </Typography>
+  );
+}
+
+function ShowWineProducers(){
+  const classes = useStyles();
+  return (
+    <Typography variant="h6" className={classes.title}>
+      <Link to="/wineProducers">Wine Prodcuers</Link>
+    </Typography>
+  );
+}
+
 export default function ButtonAppBar(props) {
   const classes = useStyles();
+  const isAdmin = props.isAdmin;
+  const isWineProducer = props.isWineProducer;
 
   return (
       <div className={classes.root}>
         <HideOnScroll {...props}>
           <AppBar>
             <Toolbar>
-              <UPortButton>Connect with uPort</UPortButton>
               <Typography variant="h6" className={classes.title}>
                 <Link to="/">Home</Link>
               </Typography>
+              {isWineProducer ? <ShowWineProducers /> : null}
+              {isAdmin ? <ShowAdminLink /> : null}
               <Typography variant="h6" className={classes.title}>
-                <Link to="/wineProducers">Wine Prodcuers</Link>
-              </Typography>
-              <Typography variant="h6" className={classes.title}>
-                <Link to="/admin">Admin</Link>
+                <Link to="/user">My Wines</Link>
               </Typography>
             </Toolbar>
           </AppBar>

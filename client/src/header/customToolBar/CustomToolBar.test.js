@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import CustomToolBar from './CustomToolBar';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<CustomToolBar />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

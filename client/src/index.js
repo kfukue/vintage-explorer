@@ -13,11 +13,7 @@ const routing = (
     <div>
   <Router>
     <Switch>
-      {/* <CustomToolBar></CustomToolBar> */}
       <Route path="/" layout={CustomToolBar} component={App} />
-      <Route path="/admin" component={Admin} />
-      {/* <Route path="/wineProducers" component={WineProducer} />
-      <Route path="/user" component={User} /> */}
      </Switch>
   </Router>
     </div>
