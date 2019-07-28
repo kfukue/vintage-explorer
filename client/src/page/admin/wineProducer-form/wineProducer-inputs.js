@@ -37,7 +37,6 @@ export const WineProducerInputs = props => {
     errors,
     touched,
     handleChange,
-    handleBlur,
     isValid,
     setFieldTouched,
     handleSubmit

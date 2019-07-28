@@ -1,22 +1,15 @@
 import React, { Component } from "react";
-import { Formik } from "formik";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Paper from "@material-ui/core/Paper";
-import * as Yup from 'yup';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const styles = theme => ({
   icon: {
@@ -24,7 +17,7 @@ const styles = theme => ({
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
+    padding: theme.spacing(2, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -54,7 +47,6 @@ class WineList extends Component {
     constructor(props, state) {
       console.log('wineform', props);
       super(props);
-      const {accounts, contract } = this.props;
       this.state = {
         totalWineProducers : -1,
         totalWines : -1,
@@ -75,12 +67,11 @@ class WineList extends Component {
 
   getWineProducers = async () => {
     try {
-      const {accounts, contract} = this.props;
+      const { contract} = this.props;
       const numWineProducers = await contract.methods.numWineProducers().call();
       this.setState({
         totalWineProducers : numWineProducers
       });
-      let totalWines = 0;
       this.setState({
         wineProducers : []
       });

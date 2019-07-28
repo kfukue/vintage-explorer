@@ -4,13 +4,20 @@ import getWeb3 from "./utils/getWeb3";
 import CustomToolBar from "./header/customToolBar/CustomToolBar.js";
 import "./App.css";
 import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import Admin from './page/admin/admin';
 import WineProducer from './page/wineProducer/wineProducer';
 import User from './page/user/user';
 import WineList from './page/wine-list/wine-list';
 import ShopWine from './page/wine-list/shop-wine';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import withStyles from "@material-ui/core/styles/withStyles";
 
-import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
+const styles = theme => ({
+  currentAddress: {
+    marginTop: theme.spacing(2),
+  },
+});
 class App extends Component {
   constructor(props){
     super(props);
@@ -53,6 +60,7 @@ class App extends Component {
   };
 
   render() {
+    const classes = this.props.classes;
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
@@ -62,6 +70,12 @@ class App extends Component {
           <CustomToolBar isAdmin={this.state.isAdmin} isWineProducer={this.state.isWineProducer}></CustomToolBar>
           <Container fixed>
             <div className="content">
+              {this.state.accounts && this.state.accounts[0] ? 
+                <Typography component="h2" align="center" color="textPrimary" className={classes.currentAddress}>
+                  Current Address : {this.state.accounts[0]}
+                </Typography>
+                : null}
+              
               <Switch>
                 <Route exact path="/" render={() => <WineList  {...this.props} {...this.state}/>}/>
                 <Route exact path="/admin" render={() => <Admin  {...this.props} {...this.state}/>}/>
@@ -77,4 +91,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withStyles(styles)(App);

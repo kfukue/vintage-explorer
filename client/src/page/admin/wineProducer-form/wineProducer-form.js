@@ -4,13 +4,9 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { WineProducerInputs } from "./wineProducer-inputs";
 import Paper from "@material-ui/core/Paper";
 import * as Yup from 'yup';
-import VintageExplorerContract from "../../../contracts/VintageExplorer.json";
-import getWeb3 from "../../../utils/getWeb3";
-import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Button from '@material-ui/core/Button';
 import ProgressBar from '../../../header/progressBar/ProgressBar';
 
 const validationSchema = Yup.object({
@@ -58,7 +54,7 @@ class WineProducerForm extends Component {
 
   getLatestWineProdcuers = async () => {
     try {
-      const {accounts, contract } = this.props;
+      const {contract } = this.props;
       const totalNumberOfWineProducers = await contract.methods.numWineProducers().call();
       let wineProducerId = totalNumberOfWineProducers;
       if(totalNumberOfWineProducers > 0){
@@ -87,12 +83,14 @@ class WineProducerForm extends Component {
     const name = value.name;
     const website = value.website;
     const wineProducer = value.wineProducer
-    const newWineId = await contract.methods.addWineProducer(name,website,wineProducer).send({ from: accounts[0] });
+    await contract.methods.addWineProducer(name,website,wineProducer).send({
+      from: accounts[0]
+    });
     this.setState({
       snackbarMsg : `Successfully addded ${name}`,
     })
     this.openSnackbar();
-    this.clearValues();
+    resetForm({});
     this.setState({
       showProgress : false,
     });
@@ -124,7 +122,6 @@ class WineProducerForm extends Component {
 
   render() {
     const classes = this.props.classes;
-    const test = this.props.test;
     return (
       <React.Fragment>
           {this.state.showProgress ? <ProgressBar /> : null}
@@ -137,7 +134,7 @@ class WineProducerForm extends Component {
               render={props => <WineProducerInputs {...props} />}
               validationSchema={validationSchema}
               onSubmit={(values, { resetForm }) => {
-                this.handleSubmit(values);
+                this.handleSubmit(values, resetForm);
               }}
             />
           </Paper>

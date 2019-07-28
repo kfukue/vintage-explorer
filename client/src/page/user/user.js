@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import ProgressBar from '../../header/progressBar/ProgressBar';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -45,7 +43,7 @@ const styles = theme => ({
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
+    padding: theme.spacing(2, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -75,7 +73,6 @@ class User extends Component {
 
   constructor(props, state) {
     super(props);
-    const {accounts, contract } = this.props;
     this.state = {
       showProgress : false,
       totalWineProducers : -1,
@@ -154,31 +151,6 @@ class User extends Component {
       });
     }
   }
-  handleRefundWine= async (event) => {
-    this.setState({
-      showProgress : true,
-    })
-    const {accounts, contract, web3 } = this.props;
-    const ownedWineIndex = +event;
-    const wine = this.state.ownedWines[ownedWineIndex];
-    const wineId = wine.wineId;
-    const wineProducerId = wine.wineProducerId;
-    const qty = wine.totalAmountOwned;
-    const amount = wine.totalAmountOwned;
-    const response = await contract.methods.getRefund(wineProducerId,wineId).send({ from: accounts[0]});
-    let msg = `Successfully refund wine ${wine.name} quantity was : ${qty}`;
-    this.setState({
-      snackbarMsg : msg
-    })
-    this.openSnackbar();
-    setTimeout(() => {
-      this.getWineProducers().then(()=>{});
-      this.setState({
-        showProgress : false,
-      })
-    },
-     3000);
-  };
 
   openSnackbar(){
     this.setState({
@@ -199,9 +171,6 @@ class User extends Component {
         {this.state.showProgress ? <ProgressBar /> : null}
           <div className={classes.heroContent}>
           <Container maxWidth="sm">
-            <Typography component="h2" align="center" color="textPrimary" gutterBottom>
-              Welcome : {this.props.accounts[0]}
-            </Typography>
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
               Total Owned Wines : {this.state.totalOwnedWineCount}
             </Typography>

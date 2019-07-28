@@ -4,7 +4,8 @@ Simple decentralized application built on react that allows wine producers post 
 
 ## Prerequisites
 
-1. Install [Node.js](http://nodejs.org)
+1. Install [Node.js](http://nodejs.org) 
+* node version ^10.16.0
 
 2. Install [Truffle](https://www.trufflesuite.com/)
 
@@ -30,7 +31,7 @@ Simple decentralized application built on react that allows wine producers post 
     * run truffle migrate
     ```bash
     npm install -g truffle
-    truffle migrate
+    truffle migrate --network develop
     ```
     * start react app locally (port 3000 by default)
     ```bash
@@ -44,4 +45,9 @@ Simple decentralized application built on react that allows wine producers post 
     npm install -g truffle
     truffle test
     ```
+3. If you have IPFS node running locally, you can load the site through ipfs
+* Hash
+    * QmUe5Z8gDr4wHDnCkrYYip42mYioL9iUoDtQ43GfReLHfv
+* Local URL 
+    * http://127.0.0.1:8080/ipfs/QmUe5Z8gDr4wHDnCkrYYip42mYioL9iUoDtQ43GfReLHfv/
 \ No newline at end of file

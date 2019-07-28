@@ -112,7 +112,8 @@ contract("VintageExplorer", accounts => {
     const zeroBalance = updatedWineProducer.balance;
     assert.equal(zeroBalance, 0, `The balance is not set to zero ${zeroBalance}`);
     const updatedBalance = await web3.eth.getBalance(accounts[1]);
-    assert(oldBalance < updatedBalance, `Old balance ${oldBalance} is greater than current balance ${updatedBalance}`);
+    console.log(`old balance ${oldBalance}, updated balance ${updatedBalance}`)
+    assert(+oldBalance < +updatedBalance, `Old balance ${oldBalance} is greater than current balance ${updatedBalance}`);
   });
   it("...Ensure kill can not be called other than owner", async () => {
     const vintageExplorerInstance = await VintageExplorer.deployed({ from: accounts[0] });

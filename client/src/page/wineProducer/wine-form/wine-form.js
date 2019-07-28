@@ -36,7 +36,7 @@ class WineForm extends Component {
   constructor(props, state) {
     console.log('wineform', props);
     super(props);
-    const {accounts, contract, web3 } = this.props;
+    const {accounts} = this.props;
     this.state = {
       showProgress : false,
       currentAccount : JSON.stringify(accounts),
@@ -62,6 +62,7 @@ class WineForm extends Component {
         balance : 0,
       }
     };
+    this.getLatestWineIdFromWineProdcuer().then(()=>{});
   }
 
   clearValues(){
@@ -111,13 +112,12 @@ class WineForm extends Component {
    }
  }
 
-  handleSubmit = async (value) => {
+  handleSubmit = async (value, resetForm) => {
     try {
       this.setState({
         showProgress : true
       });
       const {accounts, contract, web3 } = this.props;
-      // Stores a given value, 10 by default.
       const wineProducerId = this.state.wineProducer.wineProducerId;
       const name = value.name;
       const description = value.description;
@@ -126,7 +126,11 @@ class WineForm extends Component {
       const totalSupply = value.totalSupply;
       const price = web3.utils.toWei(value.price,'ether');
       const newWineId = await contract.methods.addWine(wineProducerId,name,description,
-        sku, vintage, totalSupply,price).send({ from: accounts[0] });
+        sku, vintage, totalSupply,price)
+      .send({
+        from: accounts[0],
+      });
+      resetForm({});
       this.setState({
         newWineId : newWineId,
         showProgress : false,
@@ -164,7 +168,9 @@ class WineForm extends Component {
     })
     const {accounts, contract, web3 } = this.props;
     const balance = BigNumber(this.state.wineProducer.balance).toString();
-    const response = await contract.methods.withdraw().send({ from: accounts[0]});
+    await contract.methods.withdraw().send({
+      from: accounts[0]
+    });
     await this.getLatestWineIdFromWineProdcuer();
     let msg = `Successfully withdrawed ${web3.utils.fromWei(balance, 'ether')} ETH!`;
     this.setState({
@@ -177,15 +183,11 @@ class WineForm extends Component {
   render() {
     const classes = this.props.classes;
     const web3 = this.props.web3;
-    this.getLatestWineIdFromWineProdcuer().then(()=>{});
     return (
       <React.Fragment>
         {this.state.showProgress ? <ProgressBar /> : null}
           <div className={classes.container}>
           <Paper elevation={1} className={classes.paper}>
-          <Typography gutterBottom color="textSecondary" paragraph>
-                Welcome : {this.props.accounts[0]}
-              </Typography>
               <Typography component="h1" color="textPrimary" gutterBottom>
                 Wine Producer : {this.state.wineProducer.name}
               </Typography>

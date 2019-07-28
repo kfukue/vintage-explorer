@@ -24,7 +24,7 @@ Added function kill to self destruct the contract to destroy and remove it from 
 Used require instead of ifs for checking condition in the contract so that the function will throw an exception as soon as the condition is not met.
 There are many parts of the code that use this and this is an example where require is used to check for the contract caller's value satisfies the amount when buying wine. 
 ```javascript
-function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
+    function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
         public
         payable
         stopInEmergency()

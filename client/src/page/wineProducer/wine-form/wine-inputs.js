@@ -43,21 +43,14 @@ export const WineInputs = props => {
       sku,
       vintage,
       totalSupply,
-      price,
-      totalSales,
-      open,
-      snackbarMsg,
-      totalNumberOfWines,
-      latestNumberWineId
+      price
     },
     errors,
     touched,
     handleChange,
-    handleBlur,
     isValid,
     setFieldTouched,
-    handleSubmit,
-    showProgress,
+    handleSubmit
   } = props;
 
   const change = (name, e) => {

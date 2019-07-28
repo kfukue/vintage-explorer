@@ -21,7 +21,7 @@ const styles = theme => ({
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
+    padding: theme.spacing(2, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -51,7 +51,6 @@ const styles = theme => ({
 class ShopWine extends Component {
   constructor(props, state) {
     super(props);
-    const {accounts, contract, web3, match } = this.props;
     this.state = {
       showProgress : false,
       wineProducerId : -1,
@@ -84,7 +83,7 @@ class ShopWine extends Component {
     this.setState({
       showProgress : true,
     })
-    const {accounts, contract} = this.props;
+    const {contract} = this.props;
     const wineProducerId = +_wineProducerId;
     const wineProducerResults = await contract.methods.readWineProducerById(wineProducerId).call();
     let wineProducer = {
@@ -162,20 +161,23 @@ class ShopWine extends Component {
       const wine = this.state.wines[wineId];
       const qty = wine.buyQty;
       const amount = BigNumber(wine.price * qty).toString();
-      const response = await contract.methods.buyWine(wineProducerId,wineId,qty).send({ from: accounts[0], 'value':amount});
+      await contract.methods.buyWine(wineProducerId,wineId,qty).send({ 
+        from: accounts[0],
+        value : amount
+      });
       let msg = `Successfully bought new wine ${wine.name} id is : ${qty} for : ${web3.utils.fromWei(amount, 'ether')} ETH`;
       this.setState({
         snackbarMsg : msg
       })
       this.openSnackbar();
-      setTimeout(() => {
-        const wineProducerId = this.state.wineProducerId;
-        this.getWines(wineProducerId).then(()=>{});
+      this.getWines(wineProducerId).then(()=>{
+        let wines = this.state.wines;
+        wines[wineId].buyQty = 1;
         this.setState({
+          wines : wines,
           showProgress : false,
-        })
-      },
-        3000);
+        });
+      });
     }
     catch (error) {
       // Catch any errors for any of the above operations.
