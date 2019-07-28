@@ -63,7 +63,7 @@ Arithmetic is handled by OpenZeppelin's "Safe Math" library which would help pre
     }
 ```
 
-##DoS with (Unexpected) revert
+## DoS with (Unexpected) revert
 Instead of having the contract directly send ether to the wine producer whenever a user buys wine, having a pull withdraw system allows the wine producer to be able to claim their balance independently.
 ```javascript
     function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
@@ -109,7 +109,7 @@ Instead of having the contract directly send ether to the wine producer whenever
     }
 ```
 
-##Floating Point and Precision
+## Floating Point and Precision
 The front end application displays the price of the individual wine per ether but in the contract, the price field is in wei in the struct Wine. This will make the price more precise and prevent any erroneous results when there are multiplications.
 ```javascript
     struct Wine {
