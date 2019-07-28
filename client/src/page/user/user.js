@@ -178,7 +178,6 @@ class User extends Component {
       })
     },
      3000);
-
   };
 
   openSnackbar(){
@@ -228,13 +227,6 @@ class User extends Component {
                       Number of wines owned : {ownedWine.totalAmountOwned}
                     </Typography>
                   </CardContent>
-                  <CardActions>
-                    <Grid item xs={8}>
-                      <Button onClick ={this.handleRefundWine.bind(this, index)}  size="small" color="primary">
-                        Refund This Wine
-                      </Button>
-                    </Grid>
-                  </CardActions>
                 </Card>
               </Grid>
             ))}

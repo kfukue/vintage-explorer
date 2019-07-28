@@ -4,10 +4,6 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom';
 import App from './App';
-import Wines from './page/wines/wines';
-import Admin from './page/admin/admin';
-import WineProducer from './page/wineProducer/wineProducer';
-import User from './page/user/user';
 import CustomToolBar from "./header/customToolBar/CustomToolBar.js";
 const routing = (
     <div>

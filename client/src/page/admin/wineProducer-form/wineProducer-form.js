@@ -5,7 +5,6 @@ import { WineProducerInputs } from "./wineProducer-inputs";
 import Paper from "@material-ui/core/Paper";
 import * as Yup from 'yup';
 import VintageExplorerContract from "../../../contracts/VintageExplorer.json";
-import SimpleStorageContract from "../../../contracts/SimpleStorage.json";
 import getWeb3 from "../../../utils/getWeb3";
 import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -88,9 +87,9 @@ class WineProducerForm extends Component {
     const name = value.name;
     const website = value.website;
     const wineProducer = value.wineProducer
-    const newWineId = await contract.methods.addWineProducer(name,website,wineProducer).call({ from: accounts[0] });
+    const newWineId = await contract.methods.addWineProducer(name,website,wineProducer).send({ from: accounts[0] });
     this.setState({
-      snackbarMsg : `Successfully addded ${name} id is : ${newWineId}`,
+      snackbarMsg : `Successfully addded ${name}`,
     })
     this.openSnackbar();
     this.clearValues();

@@ -35,7 +35,7 @@ contract("VintageExplorer", accounts => {
     const wineSku = 'test sku';
     const wineVintage = 1999;
     const wineTotalSupply = 100;
-    const winePrice = 100;
+    const winePrice = web3.utils.toWei('5','ether');
 
     await vintageExplorerInstance.addWine(wineProducerId, wineName, wineDescription,
       wineSku,wineVintage,wineTotalSupply,winePrice, { from: accounts[1] });
@@ -77,35 +77,44 @@ contract("VintageExplorer", accounts => {
         truffleAssert.ErrorType.REVERT
       );
   });
-
-  it("...buy wine and make sure owner has the correct number of wines", async () => {
+  it("...Buy wine and ensure owner has the correct number of wines", async () => {
     const vintageExplorerInstance = await VintageExplorer.deployed({ from: accounts[0] });
     const wineProducerAddress = accounts[1];
     const wineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress);
     const wineProducerId = wineProducer.wineProducerId;
-    //const winePrice = 100;
-    
     const updatedWineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress);
     const wineId = updatedWineProducer.numWines -1;
-  
     console.log(`got wine id : ${JSON.stringify(wineId)}`);
-    //Get wine name
-
     const wineSalesResults = await vintageExplorerInstance.readWineSalesRelated(wineProducerId, wineId);
     const numWine = 1;
-    const sentValue = 200;
+    const sentValue = web3.utils.toWei('10','ether');
 
     const buyWine = await vintageExplorerInstance.buyWine(wineProducerId, wineId, numWine,
     {
       from : accounts[4],
       value : sentValue
     });
-    const wineOwned = await vintageExplorerInstance.checkIfWineIsOwned(wineProducerId, wineId,{
+    const wineOwned = await vintageExplorerInstance.getOwnersNumberOfWines(wineProducerId, wineId,{
       from : accounts[4]
     });
-    assert.equal(wineOwned.totalAmountOwned, numWine, `The num wine ${numWine} was not stored.`);
+    assert.equal(wineOwned, numWine, `The num wine ${numWine} was not stored.`);
   });
-  it("...make sure kill can not be called other than owner", async () => {
+  it("...Ensure withdraw function transfer proper balance", async () => {
+    const vintageExplorerInstance = await VintageExplorer.deployed({ from: accounts[0] });
+    const wineProducerAddress = accounts[1];
+    const wineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress)    
+    const oldBalance = await web3.eth.getBalance(accounts[1]);
+    const buyWine = await vintageExplorerInstance.withdraw(
+    {
+      from : accounts[1],
+    });
+    const updatedWineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress);
+    const zeroBalance = updatedWineProducer.balance;
+    assert.equal(zeroBalance, 0, `The balance is not set to zero ${zeroBalance}`);
+    const updatedBalance = await web3.eth.getBalance(accounts[1]);
+    assert(oldBalance < updatedBalance, `Old balance ${oldBalance} is greater than current balance ${updatedBalance}`);
+  });
+  it("...Ensure kill can not be called other than owner", async () => {
     const vintageExplorerInstance = await VintageExplorer.deployed({ from: accounts[0] });
     vintageExplorerInstance.stopForEmergency({ from: accounts[0] });
     await truffleAssert.fails(
@@ -113,7 +122,7 @@ contract("VintageExplorer", accounts => {
       truffleAssert.ErrorType.REVERT
     );
   })
-  it("...make sure kill can be called by owner when stopped", async () => {
+  it("...Ensure kill can be called by owner when stopped", async () => {
     const vintageExplorerInstance = await VintageExplorer.deployed({ from: accounts[0] });
     vintageExplorerInstance.kill({ from: accounts[0] });
   })

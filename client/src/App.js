@@ -4,7 +4,6 @@ import getWeb3 from "./utils/getWeb3";
 import CustomToolBar from "./header/customToolBar/CustomToolBar.js";
 import "./App.css";
 import Container from '@material-ui/core/Container';
-import Wines from './page/wines/wines';
 import Admin from './page/admin/admin';
 import WineProducer from './page/wineProducer/wineProducer';
 import User from './page/user/user';
@@ -68,7 +67,6 @@ class App extends Component {
                 <Route exact path="/admin" render={() => <Admin  {...this.props} {...this.state}/>}/>
                 <Route exact path="/wineProducers" render={() => <WineProducer  {...this.props} {...this.state}/>}/>
                 <Route exact path="/user" render={() => <User  {...this.props} {...this.state}/>}/>
-                <Route exact path="/test" component={Wines} />
                 <Route exact path="/wineProducer/:wineProducerId" render={(props) => <ShopWine  {...this.props} {...this.state} {...props}/>}/>
               </Switch>
             </div>

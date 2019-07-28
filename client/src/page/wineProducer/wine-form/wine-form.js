@@ -9,6 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ProgressBar from '../../../header/progressBar/ProgressBar';
 import Typography from '@material-ui/core/Typography';
+import BigNumber from "bignumber.js"
+import Button from '@material-ui/core/Button';
 
 const validationSchema = Yup.object({
   name: Yup.string("Enter a name")
@@ -34,7 +36,7 @@ class WineForm extends Component {
   constructor(props, state) {
     console.log('wineform', props);
     super(props);
-    const {accounts, contract } = this.props;
+    const {accounts, contract, web3 } = this.props;
     this.state = {
       showProgress : false,
       currentAccount : JSON.stringify(accounts),
@@ -57,6 +59,7 @@ class WineForm extends Component {
         name : '',
         website : '',
         numWines : 0,
+        balance : 0,
       }
     };
   }
@@ -95,6 +98,7 @@ class WineForm extends Component {
         name : wineProducerResults.name,
         website : wineProducerResults.website,
         numWines : wineProducerResults.numWines,
+        balance : wineProducerResults.balance
       }
     });
   }
@@ -122,21 +126,13 @@ class WineForm extends Component {
       const totalSupply = value.totalSupply;
       const price = web3.utils.toWei(value.price,'ether');
       const newWineId = await contract.methods.addWine(wineProducerId,name,description,
-        sku, vintage, totalSupply,price).call({ from: accounts[0] });
+        sku, vintage, totalSupply,price).send({ from: accounts[0] });
       this.setState({
-        newWineId : newWineId
+        newWineId : newWineId,
+        showProgress : false,
+        snackbarMsg : `Successfully addded new wine ${name}`
       });
-      this.setState({
-        snackbarMsg : `Successfully addded new win ${name} id is : ${newWineId}`,
-      })
       this.openSnackbar();
-      setTimeout(() => {
-        this.clearValues();
-        this.setState({
-          showProgress : false
-        });
-      },
-      3000);
     }
     catch (error) {
       // Catch any errors for any of the above operations.
@@ -162,8 +158,25 @@ class WineForm extends Component {
     });
   }
 
+  handleWithdraw= async (event) => {
+    this.setState({
+      showProgress : true,
+    })
+    const {accounts, contract, web3 } = this.props;
+    const balance = BigNumber(this.state.wineProducer.balance).toString();
+    const response = await contract.methods.withdraw().send({ from: accounts[0]});
+    await this.getLatestWineIdFromWineProdcuer();
+    let msg = `Successfully withdrawed ${web3.utils.fromWei(balance, 'ether')} ETH!`;
+    this.setState({
+      snackbarMsg : msg,
+      showProgress : false
+    })
+    this.openSnackbar();
+  };
+
   render() {
     const classes = this.props.classes;
+    const web3 = this.props.web3;
     this.getLatestWineIdFromWineProdcuer().then(()=>{});
     return (
       <React.Fragment>
@@ -184,6 +197,12 @@ class WineForm extends Component {
               </Typography>
               <Typography gutterBottom color="textSecondary" paragraph>
                 Number Of Wines : {this.state.wineProducer.numWines}
+              </Typography>
+              <Typography gutterBottom color="textSecondary" paragraph>
+                Balance : {web3.utils.fromWei(BigNumber(this.state.wineProducer.balance).toString(), 'ether')} ETH
+                <Button onClick ={this.handleWithdraw.bind(this)}  size="small" color="primary" disabled ={this.state.wineProducer.balance <=0}>
+                  Withdraw balance
+                </Button>
               </Typography>
             <Formik
               render={props => <WineInputs {...props} />}
