@@ -35,7 +35,7 @@ class WineProducerForm extends Component {
         latestNumberWineProducerId : 0,
       }
       };
-      this.getLatestWineProdcuers().then(()=>{});
+      this.getLatestWineProducers().then(()=>{});
   }
 
   clearValues(){
@@ -52,7 +52,7 @@ class WineProducerForm extends Component {
     })
   }
 
-  getLatestWineProdcuers = async () => {
+  getLatestWineProducers = async () => {
     try {
       const {contract } = this.props;
       const totalNumberOfWineProducers = await contract.methods.numWineProducers().call();
@@ -94,7 +94,7 @@ class WineProducerForm extends Component {
     this.setState({
       showProgress : false,
     });
-    await this.getLatestWineProdcuers();
+    await this.getLatestWineProducers();
     }
     catch (error) {
       // Catch any errors for any of the above operations.

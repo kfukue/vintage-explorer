@@ -165,7 +165,7 @@ class ShopWine extends Component {
         from: accounts[0],
         value : amount
       });
-      let msg = `Successfully bought new wine ${wine.name} id is : ${qty} for : ${web3.utils.fromWei(amount, 'ether')} ETH`;
+      let msg = `Successfully bought new wine ${wine.name} quantity is : ${qty} for : ${web3.utils.fromWei(amount, 'ether')} ETH`;
       this.setState({
         snackbarMsg : msg
       })
@@ -218,19 +218,19 @@ class ShopWine extends Component {
                   <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>
                       <Typography gutterBottom variant="h5" component="h2">
-                        {wine.name}
+                        Name : {wine.name}
                       </Typography>
                       <Typography gutterBottom color="textSecondary" paragraph>
                         Description : {wine.description}
                       </Typography>
                       <Typography gutterBottom color="textSecondary" paragraph>
-                        sku : {wine.sku}
+                        Sku : {wine.sku}
                       </Typography>
                       <Typography gutterBottom color="textSecondary" paragraph>
-                        vintage : {wine.vintage}
+                        Vintage : {wine.vintage}
                       </Typography>
                       <Typography gutterBottom color="textSecondary" paragraph>
-                        totalSupply : {wine.totalSupply}
+                        Total Supply : {wine.totalSupply}
                       </Typography>
                       <Typography gutterBottom color="textSecondary" paragraph>
                         Price : {web3.utils.fromWei(wine.price, 'ether')} ETH

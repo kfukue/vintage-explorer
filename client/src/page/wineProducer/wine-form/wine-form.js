@@ -62,7 +62,7 @@ class WineForm extends Component {
         balance : 0,
       }
     };
-    this.getLatestWineIdFromWineProdcuer().then(()=>{});
+    this.getLatestWineIdFromWineProducer().then(()=>{});
   }
 
   clearValues(){
@@ -83,15 +83,13 @@ class WineForm extends Component {
     });
   }
 
- getLatestWineIdFromWineProdcuer = async (wineProducerAddress) => {
+ getLatestWineIdFromWineProducer = async () => {
   try {
     const {accounts, contract} = this.props;
     const numWineProducers = await contract.methods.numWineProducers().call();
-    // const wineProducerId = await contract.methods.numWineProducers().call();
     this.setState({
       numWineProducers : numWineProducers
     });
-    // const wineProducerResults = await contract.methowds.readWineProducer(wineProducerId).call();
     const wineProducerResults = await contract.methods.readWineProducerByAccount(accounts[0]).call();
     this.setState({
       wineProducer : {
@@ -131,6 +129,7 @@ class WineForm extends Component {
         from: accounts[0],
       });
       resetForm({});
+      await this.getLatestWineIdFromWineProducer()
       this.setState({
         newWineId : newWineId,
         showProgress : false,
@@ -171,7 +170,7 @@ class WineForm extends Component {
     await contract.methods.withdraw().send({
       from: accounts[0]
     });
-    await this.getLatestWineIdFromWineProdcuer();
+    await this.getLatestWineIdFromWineProducer();
     let msg = `Successfully withdrawed ${web3.utils.fromWei(balance, 'ether')} ETH!`;
     this.setState({
       snackbarMsg : msg,

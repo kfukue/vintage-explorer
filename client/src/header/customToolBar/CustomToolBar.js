@@ -47,7 +47,7 @@ function ShowWineProducers(){
   const classes = useStyles();
   return (
     <Typography variant="h6" className={classes.title}>
-      <Link to="/wineProducers">Wine Prodcuers</Link>
+      <Link to="/wineProducers">Wine Producers</Link>
     </Typography>
   );
 }

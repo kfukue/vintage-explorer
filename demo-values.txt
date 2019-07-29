@@ -1,0 +1,49 @@
+ganache-cli
+truffle migrate --network develop
+cd client
+npm run start
+
+Wine Producer 1:
+Name : Wine Producer 1
+Website : https://wineproducer1.com
+Address : 0xaf076452f143d8155b1c6ec9c24d0d5490cb3b8c
+
+Wine Producer 2:
+Name : Napa Valley Winery
+Website : https://napavalleywinery.com
+Address : 0x9ff8726988b019c69a93a1503f7217213302fd92
+
+Wine 1:
+name : Merlot
+Description : Red Wine From Oakville, Napa Valley
+sku : 0001
+vintage : 2016
+total supply : 200
+vintage : 0.5
+
+Wine 2 : 
+name : Cabernet Sauvignon
+description : Red Wine that will age really well for decades.
+sku : 0002
+vintage : 2015
+total supply : 100
+price : 1
+
+
+Wine 3 :
+name : Sauvignon Blanc
+description : Bright and fresh with hints of lime zest, pineapple, lemon and a tart, clean finish.
+sku : 0003
+vintage : 2018
+total supply : 500
+price : 0.2
+
+Wine 1 : 
+name : Pinot Noir
+description : Intense cherry cola, gingerbread and plum aromas lead to black cherry flavors on this serious Pinot Noir.
+sku : 0001
+vintage : 2016
+total supply : 200
+price : 0.5
+
+
