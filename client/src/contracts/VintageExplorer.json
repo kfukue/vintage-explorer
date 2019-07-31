@@ -25195,6 +25195,12 @@
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x7Ef0f37B61E49118ACA82951BAc83E4D96eF4B3e",
+      "transactionHash": "0x867cee1f3ae58841a2106782e51202164a3b3c2ed80ec428b0ab5d4c617b9bd1"
+    },
     "5777": {
       "events": {},
       "links": {},
@@ -25308,10 +25314,16 @@
       "links": {},
       "address": "0xb0B273fe7e76a43b653115c6c5D5DdBa5145ed99",
       "transactionHash": "0x8709de5f207fc2caaf87f954045665b585f919506ff82e77a4e03e2ae4b39bb2"
+    },
+    "1564580744350": {
+      "events": {},
+      "links": {},
+      "address": "0xcDd5f61De02998a0F99aec9cb8a12eEf4bF5CEBA",
+      "transactionHash": "0xbdb9961533ad99096a103a5a84f2e8040a2e4aeaceeafcd665bd7b377b64d101"
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-07-31T01:08:25.493Z",
+  "updatedAt": "2019-07-31T13:45:52.645Z",
   "devdoc": {
     "author": "Keita Fukue",
     "details": "Using simple math to perform arthimetic operation.",

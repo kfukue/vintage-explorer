@@ -57,11 +57,14 @@ Simple decentralized application built with react that allows wine producers to 
     npm install -g truffle
     truffle test
     ```
-3. If you have IPFS node running locally or would like to load the app with a public gateway, you can load the site through ipfs
+
+3. If you have an IPFS node running locally or would like to load the app with a public gateway, you can load the react app site through IPFS. (Only For Rinkeby Test Network)
+    * Make sure to point to Rinkeby Test Network in Metamask
+    * You would only be able to log in as a buyer account so if you would like to test the admin and wine producers' use cases, please deploy the contract locally via ganache-cli and use the local dev server (npm run start) as explained above in step 1. and 2.
     * Hash
-        * QmVMaM23U5cvYwX2jzAYtz5MpSBaE6Udvsdg2wf352N7Sh
-    * Local URL 
-        * http://127.0.0.1:8080/ipfs/QmVMaM23U5cvYwX2jzAYtz5MpSBaE6Udvsdg2wf352N7Sh/
+        * QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2
+    * Local URL (If you have an IPFS node running locally)
+        * http://127.0.0.1:8080/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
     * Public Gateway (This may take a while to load)
-        * https://cloudflare-ipfs.com/ipfs/QmVMaM23U5cvYwX2jzAYtz5MpSBaE6Udvsdg2wf352N7Sh/
-        * https://ipfs.io/ipfs/QmVMaM23U5cvYwX2jzAYtz5MpSBaE6Udvsdg2wf352N7Sh/
+        * https://cloudflare-ipfs.com/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
+        * https://ipfs.io/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
