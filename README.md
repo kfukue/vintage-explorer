@@ -47,7 +47,7 @@ Simple decentralized application built with react that allows wine producers to 
     npm run start
     ```
 
-2. To test using the test script written js
+2. To test using the test script written in js
     * start ganache-cli
     ```bash
     ganache-cli
