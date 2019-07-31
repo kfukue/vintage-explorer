@@ -19,14 +19,16 @@ Code :
         return true;
     }
 ```
-* Use transfer instead of call function
+* Use transfer function instead of call function so that it forwards 2,300 gas stipends.
 ```javascript
 msg.sender.transfer(balance);
 ```
-* Change the state variable 'wineProducers[wineProducerId].balance' to 0 before transferring the amount. Also there is a condition check of the balance or else it will not revert.
+* Change the state variable 'wineProducers[wineProducerId].balance' to 0 before transferring the amount. Also there is a condition check of the balance or else it will revert.
 ```javascript
     require(balance > 0, 'There is not enough balance');
     wineProducers[wineProducerId].balance = 0;
+    emit LogWithdrawal(msg.sender, balance);
+    msg.sender.transfer(balance);
 ```
 
 ## Integer Overflow and Underflow
@@ -64,7 +66,7 @@ Arithmetic is handled by OpenZeppelin's "Safe Math" library which would help pre
 ```
 
 ## DoS with (Unexpected) revert
-Instead of having the contract directly send ether to the wine producer whenever a user buys wine, having a pull withdraw system allows the wine producer to be able to claim their balance independently.
+Instead of having the contract directly send ether to the wine producer whenever a user buys wine, I implemented a pull withdraw system. This will allow the wine producer to be able to claim their balance independently.
 ```javascript
     function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
         public

@@ -1,7 +1,7 @@
 # Vintage-Explorer Design Pattern Requirements
 
 ## Implement a circuit breaker
-Added public variable stopped and two modifiers to implement circuit breakers.
+Added public variable "stopped" and two modifiers to implement circuit breakers.
 ```javascript
     bool public stopped = false;
     modifier stopInEmergency { require(!stopped); _;}
@@ -21,7 +21,7 @@ Added function kill to self destruct the contract to destroy and remove it from 
 ```
 
 ## Fail early and fail loud
-Used require instead of ifs for checking condition in the contract so that the function will throw an exception as soon as the condition is not met.
+Used "require" instead of "ifs" for checking condition in the contract so that the function will throw an exception as soon as the condition is not met.
 There are many parts of the code that use this and this is an example where require is used to check for the contract caller's value to see if it satisfies the amount when buying wine. 
 ```javascript
     function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
@@ -74,5 +74,6 @@ User will need to withdraw (pull) for collecting the balance from the contract. 
 ## Design Patterns That Were Not Used
 * Speed Bump
     * Since this is more of a market place, users can withdraw the amount as soon as they ship the shipments to their clients.
+    * In the future, it could be useful to put some speed bump of when the wine producer can withdraw their balance and if there is a refund function, it can give the buyer some time window to request for a refund.
 * State Machine
     * This could be more useful for auctions so maybe in the future I can implement this design.
