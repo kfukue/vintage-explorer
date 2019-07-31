@@ -10,7 +10,7 @@ Simple decentralized application built with react that allows wine producers to 
         * Install npm packages for front end application (react)
         ```bash
         cd client
-        npm i 
+        npm install
         ```
 2. Install [Truffle](https://www.trufflesuite.com/)
     ```bash
@@ -44,7 +44,6 @@ Simple decentralized application built with react that allows wine producers to 
     * start react app locally (port 3000 by default)
     ```bash
     cd client
-    npm install 
     npm run start
     ```
 
