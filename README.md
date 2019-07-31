@@ -65,6 +65,6 @@ Simple decentralized application built with react that allows wine producers to 
         * QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2
     * Local URL (If you have an IPFS node running locally)
         * http://127.0.0.1:8080/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
-    * Public Gateway (This may take a while to load)
+    * Public Gateway (This may not load properly so please run a local node if you have any issues)
         * https://cloudflare-ipfs.com/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
         * https://ipfs.io/ipfs/QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2/
