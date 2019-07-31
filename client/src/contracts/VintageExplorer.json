@@ -25302,10 +25302,16 @@
       "links": {},
       "address": "0x675af55bb23A2357c701ABA79D72102f50B30ea6",
       "transactionHash": "0xa7a9fc21887df174de9a2458e1ce4a2168f0f348e033a7702cee4b766fda4f84"
+    },
+    "1564534912089": {
+      "events": {},
+      "links": {},
+      "address": "0xb0B273fe7e76a43b653115c6c5D5DdBa5145ed99",
+      "transactionHash": "0x8709de5f207fc2caaf87f954045665b585f919506ff82e77a4e03e2ae4b39bb2"
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-07-29T13:03:29.197Z",
+  "updatedAt": "2019-07-31T01:08:25.493Z",
   "devdoc": {
     "author": "Keita Fukue",
     "details": "Using simple math to perform arthimetic operation.",

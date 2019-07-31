@@ -171,7 +171,7 @@ class WineForm extends Component {
       from: accounts[0]
     });
     await this.getLatestWineIdFromWineProducer();
-    let msg = `Successfully withdrawed ${web3.utils.fromWei(balance, 'ether')} ETH!`;
+    let msg = `Successfully withdrew ${web3.utils.fromWei(balance, 'ether')} ETH!`;
     this.setState({
       snackbarMsg : msg,
       showProgress : false

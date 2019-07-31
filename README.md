@@ -1,6 +1,6 @@
 # vintage-explorer
 
-Simple decentralized application built with react that allows wine producers to sell wine to users on the ethereum blockchain. Admins will need to add wine producers and the wine producers then can post wines.  Any users can buy wines using this smart contract on the ethereum blockchain. The wine producers can also withdraw ETH from smart contract if it has balance from its sales.
+Simple decentralized application built with react that allows wine producers to sell wine to users on the ethereum blockchain. Admins will need to add wine producers and the wine producers then can post wines.  Any users can buy wines using this smart contract on the ethereum blockchain. The wine producers can also withdraw ETH from the smart contract if it has balance from its sales.
 
 ## Prerequisites
 
@@ -27,14 +27,13 @@ Simple decentralized application built with react that allows wine producers to 
 
 ## QuickStart For Local Environment
 
-1. To start the application locally (front end react port : 3000 by default). Please start at the root of this project.
+1. To start the application locally (front end react port : 3000). Please start at the root of this project.
     * start ganache-cli
     ```bash
     ganache-cli
     ```
     * run truffle migrate
     ```bash
-    npm install -g truffle
     truffle migrate --network develop
     ```
     * start react app locally (port 3000 by default)
