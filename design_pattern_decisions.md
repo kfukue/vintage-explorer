@@ -9,7 +9,7 @@ Added public variable stopped and two modifiers to implement circuit breakers.
 ```
 
 ## Implement Mortal
-Added function kill to self destruct the contract to destroy and remove it from the blockchain. This can only be called by the owner of the contract and the circuit breaker needs to be on.
+Added function kill to self destruct the contract to destroy and remove it from the blockchain. This can only be called by the owner of the contract and the circuit breaker needs to be on (stopped needs to be true).
 ```javascript
     function kill()
         public
@@ -22,7 +22,7 @@ Added function kill to self destruct the contract to destroy and remove it from 
 
 ## Fail early and fail loud
 Used require instead of ifs for checking condition in the contract so that the function will throw an exception as soon as the condition is not met.
-There are many parts of the code that use this and this is an example where require is used to check for the contract caller's value satisfies the amount when buying wine. 
+There are many parts of the code that use this and this is an example where require is used to check for the contract caller's value to see if it satisfies the amount when buying wine. 
 ```javascript
     function buyWine(uint _wineProducerId, uint _wineId, uint numberOfPurchasingWines)
         public
@@ -54,7 +54,7 @@ There are many parts of the code that use this and this is an example where requ
 ```
 
 ## Pull over Push Payments (also known as the Withdrawal Pattern)
-User will need to withdraw (pull) for collecting the balance from the contract.
+User will need to withdraw (pull) for collecting the balance from the contract. This contract does not push Ether amount to the wine producers.
 ```javascript
     function withdraw()
         public
