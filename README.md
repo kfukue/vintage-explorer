@@ -7,7 +7,7 @@ Simple decentralized application built with react that allows wine producers to 
 1. Install [Node.js](http://nodejs.org) 
     * node version ^10.16.0
     * Please start at the root of this project.
-        * start react app locally (port 3000 by default)
+        * Install npm packages for front end application (react)
         ```bash
         cd client
         npm i 
