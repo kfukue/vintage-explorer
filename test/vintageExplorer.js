@@ -85,11 +85,10 @@ contract("VintageExplorer", accounts => {
     const updatedWineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress);
     const wineId = updatedWineProducer.numWines -1;
     console.log(`got wine id : ${JSON.stringify(wineId)}`);
-    const wineSalesResults = await vintageExplorerInstance.readWineSalesRelated(wineProducerId, wineId);
     const numWine = 1;
     const sentValue = web3.utils.toWei('10','ether');
 
-    const buyWine = await vintageExplorerInstance.buyWine(wineProducerId, wineId, numWine,
+    await vintageExplorerInstance.buyWine(wineProducerId, wineId, numWine,
     {
       from : accounts[4],
       value : sentValue
@@ -104,7 +103,7 @@ contract("VintageExplorer", accounts => {
     const wineProducerAddress = accounts[1];
     const wineProducer = await vintageExplorerInstance.readWineProducerByAccount(wineProducerAddress)    
     const oldBalance = await web3.eth.getBalance(accounts[1]);
-    const buyWine = await vintageExplorerInstance.withdraw(
+    await vintageExplorerInstance.withdraw(
     {
       from : accounts[1],
     });

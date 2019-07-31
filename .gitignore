@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+ens/ensutils-testnet.js
+
+ens/ensutils-rinkeby.js
+
+test-key.txt

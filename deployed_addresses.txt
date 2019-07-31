@@ -1,3 +1,3 @@
 Network : Rinkeby
-VintageExplorer: 0x7Ef0f37B61E49118ACA82951BAc83E4D96eF4B3e
+VintageExplorer Contract Address: 0x7Ef0f37B61E49118ACA82951BAc83E4D96eF4B3e
 Link : https://rinkeby.etherscan.io/address/0x7Ef0f37B61E49118ACA82951BAc83E4D96eF4B3e
