@@ -1,6 +1,6 @@
 # vintage-explorer
 
-Simple decentralized application built on react that allows wine producers to sell wine to users on the ethereum blockchain. Admins can add wine producers and the wine producers then can post wines where any users can buy wines on the ethereum blockchain. The wine producers can also withdraw ETH from smart contract if it has balance from its sales.
+Simple decentralized application built with react that allows wine producers to sell wine to users on the ethereum blockchain. Admins will need to add wine producers and the wine producers then can post wines.  Any users can buy wines using this smart contract on the ethereum blockchain. The wine producers can also withdraw ETH from smart contract if it has balance from its sales.
 
 ## Prerequisites
 
