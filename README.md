@@ -41,6 +41,8 @@ Simple decentralized application built with react that allows wine producers to 
     ```bash
     truffle migrate --network develop
     ```
+        * Please note that the account that deployed the contract (usually account 0 under "Available Accounts") is the admin account which is required to add wine producers by their ethereum address. 
+        * After the contract deployment please make sure to use the admin account (account 0) with metamask when loading the react app in the next step below.
     * start react app locally (port 3000 by default)
     ```bash
     cd client
