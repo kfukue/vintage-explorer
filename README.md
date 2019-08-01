@@ -54,7 +54,6 @@ Simple decentralized application built with react that allows wine producers to 
     ```
     * run truffle test
     ```bash
-    npm install -g truffle
     truffle test
     ```
 
