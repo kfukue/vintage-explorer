@@ -61,7 +61,7 @@ Simple decentralized application built with react that allows wine producers to 
 
 3. If you have an IPFS node running locally or would like to load the app with a public gateway, you can load the react app site through IPFS. (Only For Rinkeby Test Network)
     * Make sure to point to Rinkeby Test Network in Metamask
-    * You would only be able to log in as a buyer account so if you would like to test the admin and wine producers accounts, please deploy the contract locally via ganache-cli and use the local dev server (npm run start) as explained above in step 1 and 2.
+    * You would only be able to log in as a buyer account so if you would like to test the admin and wine producers accounts, please deploy the contract locally via ganache-cli and use the local dev server (npm run start) as explained above in step 1.
     * Hash
         * QmNXDertS98oGgCwNGYAG9GurfkeHTduBVL35PHLCyG1X2
     * Local URL (If you have an IPFS node running locally)
